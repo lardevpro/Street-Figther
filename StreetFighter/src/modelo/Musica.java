@@ -25,7 +25,7 @@ public class Musica {
     
 
     public void detener() {
-        if (clip != null && clip.isRunning()) {
+        if (clip != null && clip.isRunning() || clip != null && !clip.isRunning()) {
             clip.stop();
             clip = null;
         }

@@ -3,8 +3,9 @@ package modelo;
 import controlador.Controlador;
 import vista.Vista;
 
-public class Luchador extends Thread {
+public class Luchador extends Thread implements Comparable<Luchador>{
 	
+	private int golpe = 0;
 	private Musica sonido;
 	private Vista vista;
 	private Luchador rival;
@@ -19,14 +20,18 @@ public class Luchador extends Thread {
 	private int fisico;
 	private String descripcion;
 	private String[] vocesPersonaje;
-	private String[] imgPelea;
+	private String[] imgsPelea;
 	private int vida = 100;
 	private int cansancio = 100;
 	private boolean defendiendo = false;
 	private String mensajePelea;
+	
+	public Luchador() {
+		
+	}
 
 	public Luchador(String nombre, int edad, int potencia, double estatura, int velocidad, String nacionalidad,
-			int peso, int fisico, String descripcion, String[] vocesPersonaje, String[] imgPelea) {
+			int peso, int fisico, String descripcion, String[] vocesPersonaje, String[] imgsPelea) {
 		super();
 		this.nombre = nombre;
 		this.edad = edad;
@@ -38,27 +43,28 @@ public class Luchador extends Thread {
 		this.fisico = fisico;
 		this.descripcion = descripcion;
 		this.vocesPersonaje = vocesPersonaje;
-		this.imgPelea = imgPelea;
+		this.imgsPelea = imgsPelea;
 
 	}
+
 
 	public void recibirGolpe(int golpe) {
 		vida -= golpe;
 		if (vida <= 0) {
 			vida = 0;
 		}
-		mensajePelea = this.nombre + "ha recibido un golpe de " + golpe;
+		mensajePelea = this.nombre + " recibe " + golpe+" de daño";
 	}
 
 	public int atacar() {
 
-		int golpe = (int) (1 + Math.random() * potencia);
+		golpe = (int) (1 + Math.random() * potencia);
 		if (cansancio - golpe >= 0) {
 			cansancio -= golpe;
-			mensajePelea = this.nombre + " ataqua," + golpe + " potencia";
+			mensajePelea = this.nombre + " ataqua," + golpe + " de daño";
 			return golpe;
 		} else {
-			mensajePelea = this.nombre + " sin vitalidad suficinete";
+			mensajePelea = this.nombre + " sin vitalidad";
 			return 0;
 		}
 	}
@@ -67,13 +73,13 @@ public class Luchador extends Thread {
 
 		defendiendo = false;
 		int aleatorioVelocidad = (int) (1 + Math.random() * velocidad);
-		cansancio -= aleatorioVelocidad;
+		cansancio -= (aleatorioVelocidad/2);
 
 		if (golpe > aleatorioVelocidad) {
 			vida -= (golpe - aleatorioVelocidad);
-			mensajePelea = this.nombre + " protege " + aleatorioVelocidad + " de vida";
+			mensajePelea = this.nombre + " protege " + aleatorioVelocidad + " de daño";
 		} else {
-			mensajePelea = this.nombre + " se defiende del golpe";
+			mensajePelea = this.nombre + " esquiva el golpe";
 		}
 
 	}
@@ -92,6 +98,15 @@ public class Luchador extends Thread {
 	}
 
 	
+	
+	public void setVida(int vida) {
+		this.vida = vida;
+	}
+
+	public void setCansancio(int cansancio) {
+		this.cansancio = cansancio;
+	}
+
 	public void setVista(Vista vista) {
 		this.vista = vista;
 	}
@@ -129,7 +144,7 @@ public class Luchador extends Thread {
 	}
 
 	public String[] getImgPelea() {
-		return imgPelea;
+		return imgsPelea;
 	}
 
 	public String[] getVocesPersonaje() {
@@ -174,7 +189,7 @@ public class Luchador extends Thread {
 
 	public void run() {
 
-		while (!combate.isTerminado() && rival.getVida() > 0 && vida > 0) {
+		while (!combate.isTerminado() && !combate.isCombateInterrumpido()) {
 
 			if (combate.isTurnoComputadora()) {
 				if (cansancio < 10) {
@@ -198,6 +213,7 @@ public class Luchador extends Thread {
 						combate.atacar(this, rival);
 						combate.setTurnoComputadora(false);
 						Controlador.iniciarSonido(sonido,Controlador.procesarSonidosJugador(vocesPersonaje));
+						vista.ponerImagenAJlabel(vista.getLblImagenJ2Juego(), Controlador.cambiarImagenFondoAlAtacar(imgsPelea), false);
 						actualizarVista();
 						activarAcciones();
 						break;
@@ -208,13 +224,15 @@ public class Luchador extends Thread {
 				} else {
 					combate.atacar(this, rival);
 					combate.setTurnoComputadora(false);
+					Controlador.iniciarSonido(sonido,Controlador.procesarSonidosJugador(vocesPersonaje));
+					vista.ponerImagenAJlabel(vista.getLblImagenJ2Juego(), Controlador.cambiarImagenFondoAlAtacar(imgsPelea), false);
 					actualizarVista();
 					activarAcciones();
 				}
 			}
 
 			try {
-				sleep(3000);
+				sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -242,5 +260,22 @@ public class Luchador extends Thread {
 		vista.getProgressBarVitalidadPj2().setValue(cansancio);
 		vista.getLblMensajePj2().setText(this.mensajePelea);
 
+	}
+
+	@Override
+	public int compareTo(Luchador o) {
+
+		if(vida > o.vida)
+			return 1;
+		else if(vida < o.vida)
+			return -1;
+		else {
+			if(golpe > o.golpe)
+				return 1;
+			else if(golpe < o.golpe)
+				return -1;
+			else
+				return 0;
+		}
 	}
 }

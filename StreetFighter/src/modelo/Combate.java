@@ -12,16 +12,11 @@ public class Combate extends Thread {
 	private boolean terminado = false;
 	private boolean combateInterrumpido = false;
 	private Musica sonido;
-	private int cuenta = 10;
+	private int cuenta = 11;
 	private JLabel vistaContador ;
 	private Luchador jugador;
 	private Luchador computadora;
 	private Controlador controlador;
-	
-	
-	public Combate() {
-	
-	}
 	
 	
 	public void setControlador(Controlador controlador) {
@@ -86,6 +81,7 @@ public class Combate extends Thread {
 	private void comprobarVida(Luchador luchador) {
 		if(luchador.getVida() <= 0) {
 			this.terminado = true;
+			luchador.setVida(0);
 		}
 		
 	}
@@ -96,8 +92,9 @@ public class Combate extends Thread {
 			while(!combateInterrumpido && !terminado && jugador.getVida() > 0 && computadora.getVida() > 0) {
 				devolverCuenta();
 			}
+			
 			pausar(1);					
-			if(terminado && jugador.getVida() > 0 && computadora.getVida() > 0) {
+			if(terminado) {
 				Controlador.iniciarSonido(sonido, "time_over");
 			}
 			pausar(1);
@@ -108,8 +105,8 @@ public class Combate extends Thread {
 	}
 	public int devolverCuenta() {
 		
-			vistaContador.setText(cuenta+"");
 			cuenta--;
+			vistaContador.setText(cuenta+"");
 			pausar(1);
 			if(cuenta < 30 ) {
 				vistaContador.setOpaque(true);
@@ -150,8 +147,6 @@ public class Combate extends Thread {
 					break;
 				case 0:
 					Controlador.iniciarSonido(sonido, "cero");
-					break;
-				case -1:
 					terminado = true;
 					break;
 				}
@@ -167,10 +162,5 @@ public class Combate extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	private void comprobarGanadorCombate() {
-		
-	// TODO Auto-generated method stub
-
 	}
 }

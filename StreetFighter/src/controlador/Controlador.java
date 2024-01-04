@@ -96,8 +96,6 @@ public class Controlador implements ActionListener, MouseListener {
 
 		} else if (e.getSource() == vista.getBtnVolverDesdeJugar()) {
 
-			System.out.println("Combates ganados: " + combatesGanadosEnHistoriaDeSeguido);
-
 			
 			luchadores.clear();
 			cargarLuchadores(luchadores);
@@ -424,6 +422,7 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	private void atacar() {
+		
 		if (!combate.isTurnoComputadora()) {
 			jugador.getCombate().atacar(jugador, computadora);
 			iniciarSonido(sonido, procesarSonidosJugador(jugador.getVocesPersonaje()));
@@ -803,6 +802,7 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	private void limparCamposHistoria() {
+		
 		vista.getLblAvisosHistoria().setText("");
 		vista.getLblNombreHIstoria().setText("?");
 		vista.getLblEstatura().setText("?");
@@ -838,6 +838,7 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	public void iniciarActionListeners() {
+		
 		vista.getBtnEnfrentamiento().addActionListener(this);
 		vista.getBtnModoHistoria().addActionListener(this);
 		vista.getBtnInfomracion().addActionListener(this);

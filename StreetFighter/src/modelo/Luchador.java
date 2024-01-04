@@ -217,8 +217,6 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 						actualizarVista();
 						activarAcciones();
 						break;
-					default:
-						break;
 					}
 
 				} else {

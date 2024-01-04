@@ -16,12 +16,14 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.ResourceBundle.Control;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 public class Vista extends JFrame {
 
@@ -59,6 +61,24 @@ public class Vista extends JFrame {
 	private JLabel lblLogoStreetFighterInfo;
 	private JButton btnVolverDeInfo;
 	private JLabel lblFondoInfo;
+	private JLabel lblDesbloquearPersonajeNombreIMG;
+	private JLabel lblStreetMinis;
+	private JLabel lblP;
+	private JLabel lblNombreDesbloqueo;
+	private JLabel lblEdadDesbloqueoPersonaje;
+	private JLabel lblEstaturaDesbloqueoPersonaje;
+	private JLabel lblPesoDesbloqueoPersonaje;
+	private JLabel lblFisicoDesbloqueoPersonaje;
+	private JLabel labelVelocidadDesbloqueoPersonaje;
+	private JLabel lblTituloDesbloqueoPersonaje;
+	private JLabel lblImgJugadorDesbloqueado;
+	private JButton btnContinuarDesbloquePersonaje;
+	private JPanel panelDesbloqueoPersonaje;
+	private JLabel lblPtenciaDesbloquearPersonaje;
+	private JLabel lblNewLabel_11;
+	private JTextPane textPaneDescripcionDesbloqueo;
+	private JLabel lblCandado;
+	private JLabel lblMensajeDesbloqueado;
 
 	/**
 	 * Launch the application.
@@ -81,6 +101,7 @@ public class Vista extends JFrame {
 	 * Create the frame.
 	 */
 	public Vista() {
+
 		seleccionPersonaje = new ArrayList<JLabel>();
 		sobrePuesoParaElimianr = new ArrayList<JLabel>();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,11 +112,320 @@ public class Vista extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		panelDesbloqueoPersonaje = new JPanel();
+		panelDesbloqueoPersonaje.setBounds(0, 0, 847, 613);
+		contentPane.add(panelDesbloqueoPersonaje);
+		panelDesbloqueoPersonaje.setLayout(null);
+		panelDesbloqueoPersonaje.setVisible(false);
+
+		lblImgJugadorDesbloqueado = new JLabel("");
+		lblImgJugadorDesbloqueado.setBounds(432, 166, 333, 269);
+		panelDesbloqueoPersonaje.add(lblImgJugadorDesbloqueado);
+
+		btnContinuarDesbloquePersonaje = new JButton("Continuar");
+		btnContinuarDesbloquePersonaje.setBackground(new Color(255, 255, 128));
+		btnContinuarDesbloquePersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
+		btnContinuarDesbloquePersonaje.setBounds(10, 539, 127, 42);
+		panelDesbloqueoPersonaje.add(btnContinuarDesbloquePersonaje);
+
+		JLabel lblNewLabel_4 = new JLabel("Nombre:");
+		lblNewLabel_4.setForeground(new Color(255, 255, 0));
+		lblNewLabel_4.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblNewLabel_4.setBounds(29, 205, 70, 26);
+		panelDesbloqueoPersonaje.add(lblNewLabel_4);
+
+		JLabel lblNewLabel_6 = new JLabel("Edad:");
+		lblNewLabel_6.setForeground(new Color(255, 255, 0));
+		lblNewLabel_6.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblNewLabel_6.setBounds(29, 241, 70, 21);
+		panelDesbloqueoPersonaje.add(lblNewLabel_6);
+
+		JLabel lblNewLabel_7 = new JLabel("Estatura:");
+		lblNewLabel_7.setForeground(new Color(255, 255, 0));
+		lblNewLabel_7.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblNewLabel_7.setBounds(29, 272, 82, 21);
+		panelDesbloqueoPersonaje.add(lblNewLabel_7);
+
+		JLabel lblNewLabel_8 = new JLabel("Peso:");
+		lblNewLabel_8.setForeground(new Color(255, 255, 0));
+		lblNewLabel_8.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblNewLabel_8.setBounds(29, 303, 53, 21);
+		panelDesbloqueoPersonaje.add(lblNewLabel_8);
+
+		JLabel lblNewLabel_9 = new JLabel("Físico:");
+		lblNewLabel_9.setForeground(new Color(255, 255, 0));
+		lblNewLabel_9.setFont(new Font("Baskerville Old Face", Font.BOLD, 15));
+		lblNewLabel_9.setBounds(29, 334, 70, 21);
+		panelDesbloqueoPersonaje.add(lblNewLabel_9);
+
+		JLabel lblNewLabel_10 = new JLabel("Velocidad:");
+		lblNewLabel_10.setForeground(new Color(255, 255, 0));
+		lblNewLabel_10.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblNewLabel_10.setBounds(29, 365, 82, 21);
+		panelDesbloqueoPersonaje.add(lblNewLabel_10);
+
+		lblDesbloquearPersonajeNombreIMG = new JLabel("");
+		lblDesbloquearPersonajeNombreIMG.setBounds(77, 10, 208, 69);
+		panelDesbloqueoPersonaje.add(lblDesbloquearPersonajeNombreIMG);
+
+		lblP = new JLabel("Potencia:");
+		lblP.setForeground(new Color(255, 255, 0));
+		lblP.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblP.setBounds(29, 396, 82, 26);
+		panelDesbloqueoPersonaje.add(lblP);
+
+		lblNombreDesbloqueo = new JLabel("");
+		lblNombreDesbloqueo.setForeground(new Color(255, 255, 255));
+		lblNombreDesbloqueo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNombreDesbloqueo.setFont(new Font("Bookman Old Style", Font.BOLD, 17));
+		lblNombreDesbloqueo.setBounds(121, 198, 101, 33);
+		panelDesbloqueoPersonaje.add(lblNombreDesbloqueo);
+
+		lblEdadDesbloqueoPersonaje = new JLabel("");
+		lblEdadDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
+		lblEdadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEdadDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
+		lblEdadDesbloqueoPersonaje.setBounds(131, 229, 101, 33);
+		panelDesbloqueoPersonaje.add(lblEdadDesbloqueoPersonaje);
+
+		lblEstaturaDesbloqueoPersonaje = new JLabel("");
+		lblEstaturaDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
+		lblEstaturaDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEstaturaDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
+		lblEstaturaDesbloqueoPersonaje.setBounds(121, 260, 101, 33);
+		panelDesbloqueoPersonaje.add(lblEstaturaDesbloqueoPersonaje);
+
+		lblPesoDesbloqueoPersonaje = new JLabel("");
+		lblPesoDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
+		lblPesoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPesoDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblPesoDesbloqueoPersonaje.setBounds(121, 291, 101, 33);
+		panelDesbloqueoPersonaje.add(lblPesoDesbloqueoPersonaje);
+
+		lblFisicoDesbloqueoPersonaje = new JLabel("");
+		lblFisicoDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
+		lblFisicoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFisicoDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblFisicoDesbloqueoPersonaje.setBounds(121, 322, 101, 33);
+		panelDesbloqueoPersonaje.add(lblFisicoDesbloqueoPersonaje);
+
+		labelVelocidadDesbloqueoPersonaje = new JLabel("");
+		labelVelocidadDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
+		labelVelocidadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		labelVelocidadDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
+		labelVelocidadDesbloqueoPersonaje.setBounds(121, 353, 101, 33);
+		panelDesbloqueoPersonaje.add(labelVelocidadDesbloqueoPersonaje);
+
+		lblTituloDesbloqueoPersonaje = new JLabel("");
+		lblTituloDesbloqueoPersonaje.setBounds(324, 20, 419, 121);
+		panelDesbloqueoPersonaje.add(lblTituloDesbloqueoPersonaje);
+
+		lblPtenciaDesbloquearPersonaje = new JLabel("");
+		lblPtenciaDesbloquearPersonaje.setForeground(new Color(255, 255, 255));
+		lblPtenciaDesbloquearPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
+		lblPtenciaDesbloquearPersonaje.setBounds(121, 389, 101, 33);
+		panelDesbloqueoPersonaje.add(lblPtenciaDesbloquearPersonaje);
+
+		lblNewLabel_11 = new JLabel("Descripción:");
+		lblNewLabel_11.setForeground(new Color(255, 255, 0));
+		lblNewLabel_11.setBackground(new Color(255, 255, 255));
+		lblNewLabel_11.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		lblNewLabel_11.setBounds(233, 455, 101, 26);
+		panelDesbloqueoPersonaje.add(lblNewLabel_11);
+
+		textPaneDescripcionDesbloqueo = new JTextPane();
+		textPaneDescripcionDesbloqueo.setForeground(new Color(255, 255, 255));
+		textPaneDescripcionDesbloqueo.setBackground(new Color(64, 0, 64));
+		textPaneDescripcionDesbloqueo.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		textPaneDescripcionDesbloqueo.setBounds(186, 480, 621, 105);
+		panelDesbloqueoPersonaje.add(textPaneDescripcionDesbloqueo);
+		ponerImagenAJlabel(lblTituloDesbloqueoPersonaje, "logo_street_fighter.png", false);
+
+		lblCandado = new JLabel("");
+		lblCandado.setBounds(242, 136, 115, 95);
+		panelDesbloqueoPersonaje.add(lblCandado);
+
+		lblMensajeDesbloqueado = new JLabel("");
+		lblMensajeDesbloqueado.setBounds(-2, 0, 139, 105);
+		panelDesbloqueoPersonaje.add(lblMensajeDesbloqueado);
+
+		JLabel lblFondoDesbloqueoPersonaje = new JLabel("");
+		lblFondoDesbloqueoPersonaje.setBounds(-2, 0, 837, 596);
+		panelDesbloqueoPersonaje.add(lblFondoDesbloqueoPersonaje);
+
+		panelHistoriaPersonajes = new JPanel();
+		panelHistoriaPersonajes.setForeground(new Color(0, 0, 0));
+		panelHistoriaPersonajes.setBackground(new Color(255, 255, 255));
+		panelHistoriaPersonajes.setBounds(0, 0, 847, 663);
+		contentPane.add(panelHistoriaPersonajes);
+		panelHistoriaPersonajes.setLayout(null);
+		panelHistoriaPersonajes.setVisible(false);
+
+		textAreaDescripcionHistoria = new JTextArea();
+		textAreaDescripcionHistoria.setOpaque(false);
+		textAreaDescripcionHistoria.setForeground(Color.WHITE);
+		textAreaDescripcionHistoria.setFont(new Font("Bookman Old Style", Font.BOLD, 13));
+		textAreaDescripcionHistoria.setEnabled(false);
+		textAreaDescripcionHistoria.setEditable(false);
+		textAreaDescripcionHistoria.setBackground(Color.BLACK);
+		textAreaDescripcionHistoria.setBounds(22, 551, 686, 39);
+		panelHistoriaPersonajes.add(textAreaDescripcionHistoria);
+
+		lblNewLabel = new JLabel("Descripción:");
+		lblNewLabel.setForeground(new Color(255, 255, 128));
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel.setBounds(22, 514, 109, 39);
+		panelHistoriaPersonajes.add(lblNewLabel);
+
+		lblFisico = new JLabel("?");
+		lblFisico.setForeground(new Color(255, 255, 255));
+		lblFisico.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFisico.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblFisico.setBounds(254, 80, 75, 34);
+		panelHistoriaPersonajes.add(lblFisico);
+
+		lblVelocidad = new JLabel("?");
+		lblVelocidad.setHorizontalAlignment(SwingConstants.CENTER);
+		lblVelocidad.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblVelocidad.setForeground(new Color(255, 255, 255));
+		lblVelocidad.setBounds(156, 84, 58, 26);
+		panelHistoriaPersonajes.add(lblVelocidad);
+
+		lblPotencia = new JLabel("?");
+		lblPotencia.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblPotencia.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPotencia.setForeground(new Color(255, 255, 255));
+		lblPotencia.setBounds(32, 84, 65, 26);
+		panelHistoriaPersonajes.add(lblPotencia);
+
+		lblPersonajeHistoriaImagen = new JLabel("");
+		lblPersonajeHistoriaImagen.setBounds(301, 278, 259, 261);
+		panelHistoriaPersonajes.add(lblPersonajeHistoriaImagen);
+
+		lblNewLabel_potencia = new JLabel("POTENCIA");
+		lblNewLabel_potencia.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_potencia.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_potencia.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_potencia.setForeground(new Color(255, 255, 128));
+		lblNewLabel_potencia.setBackground(new Color(0, 0, 255));
+		lblNewLabel_potencia.setBounds(11, 61, 116, 67);
+		panelHistoriaPersonajes.add(lblNewLabel_potencia);
+
+		comboBoxNombresHistoria = new JComboBox();
+		comboBoxNombresHistoria.setForeground(new Color(255, 255, 255));
+		comboBoxNombresHistoria.setBackground(new Color(0, 128, 255));
+		comboBoxNombresHistoria.setFont(new Font("Dialog", Font.BOLD, 20));
+		comboBoxNombresHistoria.setBounds(547, 48, 248, 39);
+		panelHistoriaPersonajes.add(comboBoxNombresHistoria);
+
+		btnMostrarHistoriaPersonaje = new JButton("Mostrar Historia");
+		btnMostrarHistoriaPersonaje.setForeground(new Color(255, 255, 255));
+		btnMostrarHistoriaPersonaje.setBackground(new Color(0, 128, 255));
+		btnMostrarHistoriaPersonaje.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnMostrarHistoriaPersonaje.setBounds(634, 116, 161, 34);
+		panelHistoriaPersonajes.add(btnMostrarHistoriaPersonaje);
+
+		JLabel lblNewLabel_1 = new JLabel("Nombre: ");
+		lblNewLabel_1.setForeground(new Color(255, 255, 128));
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNewLabel_1.setBounds(15, 169, 65, 21);
+		panelHistoriaPersonajes.add(lblNewLabel_1);
+
+		lblNombreHIstoria = new JLabel("?");
+		lblNombreHIstoria.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNombreHIstoria.setForeground(new Color(255, 255, 255));
+		lblNombreHIstoria.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNombreHIstoria.setBounds(69, 168, 58, 21);
+		panelHistoriaPersonajes.add(lblNombreHIstoria);
+
+		JLabel lblNewLabel_2 = new JLabel("Edad: ");
+		lblNewLabel_2.setForeground(new Color(255, 255, 128));
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNewLabel_2.setBounds(15, 199, 36, 26);
+		panelHistoriaPersonajes.add(lblNewLabel_2);
+
+		lblEdadHIstoria = new JLabel("?");
+		lblEdadHIstoria.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEdadHIstoria.setForeground(new Color(255, 255, 255));
+		lblEdadHIstoria.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblEdadHIstoria.setBounds(44, 200, 36, 22);
+		panelHistoriaPersonajes.add(lblEdadHIstoria);
+
+		JLabel lblNewLabel_3 = new JLabel("Estatura: ");
+		lblNewLabel_3.setForeground(new Color(255, 255, 128));
+		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNewLabel_3.setBounds(15, 231, 65, 16);
+		panelHistoriaPersonajes.add(lblNewLabel_3);
+
+		lblEstatura = new JLabel("?");
+		lblEstatura.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEstatura.setForeground(new Color(255, 255, 255));
+		lblEstatura.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblEstatura.setBounds(69, 227, 58, 22);
+		panelHistoriaPersonajes.add(lblEstatura);
+
+		btnVolverAtrasDesdeLeyendas = new JButton("Atrás");
+		btnVolverAtrasDesdeLeyendas.setBackground(new Color(255, 255, 0));
+		btnVolverAtrasDesdeLeyendas.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnVolverAtrasDesdeLeyendas.setBounds(707, 555, 99, 21);
+		panelHistoriaPersonajes.add(btnVolverAtrasDesdeLeyendas);
+
+		JLabel lblNewLabel_5 = new JLabel("Peso:");
+		lblNewLabel_5.setForeground(new Color(255, 255, 128));
+		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNewLabel_5.setBounds(15, 257, 52, 19);
+		panelHistoriaPersonajes.add(lblNewLabel_5);
+
+		lblPesoHistoria = new JLabel("?");
+		lblPesoHistoria.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPesoHistoria.setForeground(new Color(255, 255, 255));
+		lblPesoHistoria.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblPesoHistoria.setBounds(55, 252, 52, 26);
+		panelHistoriaPersonajes.add(lblPesoHistoria);
+
+		lblAvisosHistoria = new JLabel();
+		lblAvisosHistoria.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblAvisosHistoria.setForeground(new Color(255, 0, 0));
+		lblAvisosHistoria.setBounds(264, 219, 397, 28);
+		panelHistoriaPersonajes.add(lblAvisosHistoria);
+		panelHistoriaPersonajes.setVisible(false);
+
+		lblNewLabel_velocidad = new JLabel("VELOCIDAD");
+		lblNewLabel_velocidad.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_velocidad.setForeground(new Color(255, 255, 128));
+		lblNewLabel_velocidad.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_velocidad.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_velocidad.setBounds(125, 61, 116, 67);
+		panelHistoriaPersonajes.add(lblNewLabel_velocidad);
+
+		lblNewLabel_fisico = new JLabel("FÍSICO");
+		lblNewLabel_fisico.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_fisico.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_fisico.setVerticalAlignment(SwingConstants.TOP);
+		lblNewLabel_fisico.setForeground(new Color(255, 255, 128));
+		lblNewLabel_fisico.setBounds(236, 61, 116, 67);
+		panelHistoriaPersonajes.add(lblNewLabel_fisico);
+
+		ponerBordeJlabel(lblNewLabel_potencia);
+		ponerBordeJlabel(lblNewLabel_velocidad);
+		ponerBordeJlabel(lblNewLabel_fisico);
+
+		lblFondoHistoriaPersonajes = new JLabel();
+		lblFondoHistoriaPersonajes.setBounds(0, 0, 847, 608);
+		ponerImagenAJlabel(lblFondoHistoriaPersonajes, "fondo_historias_personajes.jpg", true);
+		panelHistoriaPersonajes.add(lblFondoHistoriaPersonajes);
+
+		ponerImagenAJlabel(lblPersonajeHistoriaImagen, "interrogacion_historia.png", false);
+
 		panelInformacion = new JPanel();
 		panelInformacion.setBounds(0, 0, 829, 613);
 		contentPane.add(panelInformacion);
 		panelInformacion.setVisible(false);
 		panelInformacion.setLayout(null);
+
+		lblStreetMinis = new JLabel("");
+		lblStreetMinis.setBounds(396, 10, 210, 142);
+		panelInformacion.add(lblStreetMinis);
 
 		textAreaScrollPanel = new JTextArea();
 		textAreaScrollPanel.setBackground(new Color(0, 128, 255));
@@ -114,7 +444,7 @@ public class Vista extends JFrame {
 
 		scrollPaneInfo = new JScrollPane(textAreaScrollPanel);
 		scrollPaneInfo.setToolTipText("");
-		scrollPaneInfo.setBounds(104, 143, 620, 376);
+		scrollPaneInfo.setBounds(126, 162, 648, 376);
 		panelInformacion.add(scrollPaneInfo);
 
 		btnVolverDeInfo = new JButton("Volver");
@@ -124,9 +454,10 @@ public class Vista extends JFrame {
 		panelInformacion.add(btnVolverDeInfo);
 
 		lblFondoInfo = new JLabel("");
-		lblFondoInfo.setBounds(0, 0, 847, 613);
-		ponerImagenAJlabel(lblFondoInfo, "fondo_info.jpg", true);
+		lblFondoInfo.setBounds(-10, -10, 861, 613);
 		panelInformacion.add(lblFondoInfo);
+		ponerImagenAJlabel(lblFondoInfo, "fondo_info.jpg", true);
+		ponerImagenAJlabel(lblLogoStreetFighterInfo, "logo_street_fighter.png", false);
 
 		panelJuego = new JPanel();
 		panelJuego.setBounds(0, 0, 847, 603);
@@ -282,170 +613,6 @@ public class Vista extends JFrame {
 		panelJuego.add(lblFondoPartida);
 		ponerImagenAJlabel(lblFondoPartida, "fondo_partida.jpeg", true);
 
-		panelHistoriaPersonajes = new JPanel();
-		panelHistoriaPersonajes.setForeground(new Color(0, 0, 0));
-		panelHistoriaPersonajes.setBackground(new Color(255, 255, 255));
-		panelHistoriaPersonajes.setBounds(0, 0, 847, 663);
-		contentPane.add(panelHistoriaPersonajes);
-		panelHistoriaPersonajes.setLayout(null);
-		panelHistoriaPersonajes.setVisible(false);
-
-		textAreaDescripcionHistoria = new JTextArea();
-		textAreaDescripcionHistoria.setOpaque(false);
-		textAreaDescripcionHistoria.setForeground(Color.WHITE);
-		textAreaDescripcionHistoria.setFont(new Font("Bookman Old Style", Font.BOLD, 13));
-		textAreaDescripcionHistoria.setEnabled(false);
-		textAreaDescripcionHistoria.setEditable(false);
-		textAreaDescripcionHistoria.setBackground(Color.BLACK);
-		textAreaDescripcionHistoria.setBounds(22, 551, 686, 39);
-		panelHistoriaPersonajes.add(textAreaDescripcionHistoria);
-
-		lblNewLabel = new JLabel("Descripción:");
-		lblNewLabel.setForeground(new Color(255, 255, 128));
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel.setBounds(22, 514, 109, 39);
-		panelHistoriaPersonajes.add(lblNewLabel);
-
-		lblFisico = new JLabel("?");
-		lblFisico.setForeground(new Color(255, 255, 255));
-		lblFisico.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFisico.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblFisico.setBounds(254, 80, 75, 34);
-		panelHistoriaPersonajes.add(lblFisico);
-
-		lblVelocidad = new JLabel("?");
-		lblVelocidad.setHorizontalAlignment(SwingConstants.CENTER);
-		lblVelocidad.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblVelocidad.setForeground(new Color(255, 255, 255));
-		lblVelocidad.setBounds(156, 84, 58, 26);
-		panelHistoriaPersonajes.add(lblVelocidad);
-
-		lblPotencia = new JLabel("?");
-		lblPotencia.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblPotencia.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPotencia.setForeground(new Color(255, 255, 255));
-		lblPotencia.setBounds(32, 84, 65, 26);
-		panelHistoriaPersonajes.add(lblPotencia);
-
-		lblPersonajeHistoriaImagen = new JLabel("");
-		lblPersonajeHistoriaImagen.setBounds(301, 278, 259, 261);
-		panelHistoriaPersonajes.add(lblPersonajeHistoriaImagen);
-
-		lblNewLabel_potencia = new JLabel("POTENCIA");
-		lblNewLabel_potencia.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_potencia.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel_potencia.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_potencia.setForeground(new Color(255, 255, 128));
-		lblNewLabel_potencia.setBackground(new Color(0, 0, 255));
-		lblNewLabel_potencia.setBounds(11, 61, 116, 67);
-		panelHistoriaPersonajes.add(lblNewLabel_potencia);
-
-		comboBoxNombresHistoria = new JComboBox();
-		comboBoxNombresHistoria.setForeground(new Color(255, 255, 255));
-		comboBoxNombresHistoria.setBackground(new Color(0, 128, 255));
-		comboBoxNombresHistoria.setFont(new Font("Dialog", Font.BOLD, 20));
-		comboBoxNombresHistoria.setBounds(547, 48, 248, 39);
-		panelHistoriaPersonajes.add(comboBoxNombresHistoria);
-
-		btnMostrarHistoriaPersonaje = new JButton("Mostrar Historia");
-		btnMostrarHistoriaPersonaje.setForeground(new Color(255, 255, 255));
-		btnMostrarHistoriaPersonaje.setBackground(new Color(0, 128, 255));
-		btnMostrarHistoriaPersonaje.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnMostrarHistoriaPersonaje.setBounds(634, 116, 161, 34);
-		panelHistoriaPersonajes.add(btnMostrarHistoriaPersonaje);
-
-		JLabel lblNewLabel_1 = new JLabel("Nombre: ");
-		lblNewLabel_1.setForeground(new Color(255, 255, 128));
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1.setBounds(15, 169, 65, 21);
-		panelHistoriaPersonajes.add(lblNewLabel_1);
-
-		lblNombreHIstoria = new JLabel("?");
-		lblNombreHIstoria.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNombreHIstoria.setForeground(new Color(255, 255, 255));
-		lblNombreHIstoria.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNombreHIstoria.setBounds(69, 168, 58, 21);
-		panelHistoriaPersonajes.add(lblNombreHIstoria);
-
-		JLabel lblNewLabel_2 = new JLabel("Edad: ");
-		lblNewLabel_2.setForeground(new Color(255, 255, 128));
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_2.setBounds(15, 199, 36, 26);
-		panelHistoriaPersonajes.add(lblNewLabel_2);
-
-		lblEdadHIstoria = new JLabel("?");
-		lblEdadHIstoria.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEdadHIstoria.setForeground(new Color(255, 255, 255));
-		lblEdadHIstoria.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblEdadHIstoria.setBounds(44, 200, 36, 22);
-		panelHistoriaPersonajes.add(lblEdadHIstoria);
-
-		JLabel lblNewLabel_3 = new JLabel("Estatura: ");
-		lblNewLabel_3.setForeground(new Color(255, 255, 128));
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_3.setBounds(15, 231, 65, 16);
-		panelHistoriaPersonajes.add(lblNewLabel_3);
-
-		lblEstatura = new JLabel("?");
-		lblEstatura.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEstatura.setForeground(new Color(255, 255, 255));
-		lblEstatura.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblEstatura.setBounds(69, 227, 58, 22);
-		panelHistoriaPersonajes.add(lblEstatura);
-
-		btnVolverAtrasDesdeLeyendas = new JButton("Atrás");
-		btnVolverAtrasDesdeLeyendas.setBackground(new Color(255, 255, 0));
-		btnVolverAtrasDesdeLeyendas.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnVolverAtrasDesdeLeyendas.setBounds(707, 555, 99, 21);
-		panelHistoriaPersonajes.add(btnVolverAtrasDesdeLeyendas);
-
-		JLabel lblNewLabel_5 = new JLabel("Peso:");
-		lblNewLabel_5.setForeground(new Color(255, 255, 128));
-		lblNewLabel_5.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_5.setBounds(15, 257, 52, 19);
-		panelHistoriaPersonajes.add(lblNewLabel_5);
-
-		lblPesoHistoria = new JLabel("?");
-		lblPesoHistoria.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPesoHistoria.setForeground(new Color(255, 255, 255));
-		lblPesoHistoria.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblPesoHistoria.setBounds(45, 252, 52, 26);
-		panelHistoriaPersonajes.add(lblPesoHistoria);
-
-		lblAvisosHistoria = new JLabel();
-		lblAvisosHistoria.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblAvisosHistoria.setForeground(new Color(255, 0, 0));
-		lblAvisosHistoria.setBounds(264, 219, 397, 28);
-		panelHistoriaPersonajes.add(lblAvisosHistoria);
-		panelHistoriaPersonajes.setVisible(false);
-
-		lblNewLabel_velocidad = new JLabel("VELOCIDAD");
-		lblNewLabel_velocidad.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_velocidad.setForeground(new Color(255, 255, 128));
-		lblNewLabel_velocidad.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_velocidad.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel_velocidad.setBounds(125, 61, 116, 67);
-		panelHistoriaPersonajes.add(lblNewLabel_velocidad);
-
-		lblNewLabel_fisico = new JLabel("FÍSICO");
-		lblNewLabel_fisico.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_fisico.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_fisico.setVerticalAlignment(SwingConstants.TOP);
-		lblNewLabel_fisico.setForeground(new Color(255, 255, 128));
-		lblNewLabel_fisico.setBounds(236, 61, 116, 67);
-		panelHistoriaPersonajes.add(lblNewLabel_fisico);
-
-		ponerBordeJlabel(lblNewLabel_potencia);
-		ponerBordeJlabel(lblNewLabel_velocidad);
-		ponerBordeJlabel(lblNewLabel_fisico);
-
-		lblFondoHistoriaPersonajes = new JLabel();
-		lblFondoHistoriaPersonajes.setBounds(0, 0, 847, 608);
-		ponerImagenAJlabel(lblFondoHistoriaPersonajes, "fondo_historias_personajes.jpg", true);
-		panelHistoriaPersonajes.add(lblFondoHistoriaPersonajes);
-
-		ponerImagenAJlabel(lblPersonajeHistoriaImagen, "interrogacion_historia.png", false);
-
 		panelMenu = new JPanel();
 		panelMenu.setBounds(0, 0, 851, 613);
 		contentPane.add(panelMenu);
@@ -486,15 +653,62 @@ public class Vista extends JFrame {
 		fondoMenu.setBounds(0, 0, 847, 612);
 		panelMenu.add(fondoMenu);
 
-		ponerImagenAJlabel(tituloJlabel, "logo_inicio.png", false);
+		ponerImagenAJlabel(tituloJlabel, "logo_street_fighter.png", false);
 		ponerImagenAJlabel(fondoMenu, "fondo_inicio.png", true);
-
+		ponerImagenAJlabel(lblStreetMinis, "informacion_etiqueta_minis.png", false);
+		ponerImagenAJlabel(lblFondoDesbloqueoPersonaje, "fondo_desbloqueo_personaje.jpg", true);
+		ponerImagenAJlabel(lblCandado, "candado.png", false);
+		ponerImagenAJlabel(lblMensajeDesbloqueado, "new.png", false);
 	}
 
 	// METODO PARA INSERTAR IMAGENES EN LOS JLABEL
 
 	public JButton getBtnLeyendaPersonajes() {
 		return btnLeyendaPersonajes;
+	}
+
+	public JLabel getLblDesbloquearPersonajeNombreIMG() {
+		return lblDesbloquearPersonajeNombreIMG;
+	}
+
+	public JTextPane getTextPaneDescripcionDesbloqueo() {
+		return textPaneDescripcionDesbloqueo;
+	}
+
+	public JLabel getLblPtenciaDesbloquearPersonaje() {
+		return lblPtenciaDesbloquearPersonaje;
+	}
+
+	public JLabel getLblEdadDesbloqueoPersonaje() {
+		return lblEdadDesbloqueoPersonaje;
+	}
+
+	public JLabel getLblEstaturaDesbloqueoPersonaje() {
+		return lblEstaturaDesbloqueoPersonaje;
+	}
+
+	public JLabel getLblPesoDesbloqueoPersonaje() {
+		return lblPesoDesbloqueoPersonaje;
+	}
+
+	public JLabel getLblFisicoDesbloqueoPersonaje() {
+		return lblFisicoDesbloqueoPersonaje;
+	}
+
+	public JLabel getLblTituloDesbloqueoPersonaje() {
+		return lblTituloDesbloqueoPersonaje;
+	}
+
+	public JLabel getLblImgJugadorDesbloqueado() {
+		return lblImgJugadorDesbloqueado;
+	}
+
+	public JButton getBtnContinuarDesbloquePersonaje() {
+		return btnContinuarDesbloquePersonaje;
+	}
+
+	public JPanel getPanelDesbloqueoPersonaje() {
+		return panelDesbloqueoPersonaje;
 	}
 
 	public JPanel getPanelInformacion() {
@@ -773,15 +987,17 @@ public class Vista extends JFrame {
 		contentPane.add(panelSeleccionPersonajes);
 		panelSeleccionPersonajes.setLayout(null);
 		panelSeleccionPersonajes.setVisible(false);
-		
+
 		panelSeleccionPersonajes.removeAll();
 		seleccionPersonaje.clear();
 		sobrePuesoParaElimianr.clear();
-		
-		
-		if (!Controlador.modoHistoria) {
-			Controlador.personajesDesbloqueados = 15;
-		}
+
+		int desbloqueados = 0;
+
+		if (!Controlador.modoHistoria)
+			desbloqueados = 15;
+		else
+			desbloqueados = Controlador.personajesDesbloqueados;
 
 		int nombreLabel = 0;
 
@@ -807,8 +1023,8 @@ public class Vista extends JFrame {
 				label.setName(nombreLabel + "");
 				sobrePuesto.setName(nombreLabel + "");
 
-				if (nombreLabel < Controlador.personajesDesbloqueados) {
-					
+				if (nombreLabel < desbloqueados) {
+
 					panelSeleccionPersonajes.add(sobrePuesto);
 					panelSeleccionPersonajes.add(label);
 
@@ -820,16 +1036,14 @@ public class Vista extends JFrame {
 					label.setEnabled(false);
 					panelSeleccionPersonajes.add(sobrePuesto);
 					panelSeleccionPersonajes.add(label);
-					
+
 					sobrePuesoParaElimianr.add(sobrePuesto);
 					seleccionPersonaje.add(label);
-
+					nombreLabel++;
 				}
 			}
 		}
-		
-		Controlador.personajesDesbloqueados = 5;
-		
+
 		lblPotenciaSeleccionarPersonaje = new JLabel("?");
 		lblPotenciaSeleccionarPersonaje.setForeground(new Color(255, 255, 255));
 		lblPotenciaSeleccionarPersonaje.setFont(new Font("Tahoma", Font.BOLD, 14));

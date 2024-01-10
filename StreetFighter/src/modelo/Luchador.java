@@ -3,12 +3,10 @@ package modelo;
 import controlador.Controlador;
 import vista.Vista;
 
-public class Luchador extends Thread implements Comparable<Luchador>{
+public class Luchador implements Comparable<Luchador>{
 	
 	private int golpe = 0;
 	private Musica sonido;
-	private Vista vista;
-	private Luchador rival;
 	private Combate combate;
 	private String nombre;
 	private int edad;
@@ -25,13 +23,14 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 	private int cansancio = 100;
 	private boolean defendiendo = false;
 	private String mensajePelea;
+	private boolean bloqueado;
 	
 	public Luchador() {
 		
 	}
 
 	public Luchador(String nombre, int edad, int potencia, double estatura, int velocidad, String nacionalidad,
-			int peso, int fisico, String descripcion, String[] vocesPersonaje, String[] imgsPelea) {
+			int peso, int fisico, String descripcion, String[] vocesPersonaje, String[] imgsPelea,boolean bloqueado) {
 		super();
 		this.nombre = nombre;
 		this.edad = edad;
@@ -44,7 +43,7 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 		this.descripcion = descripcion;
 		this.vocesPersonaje = vocesPersonaje;
 		this.imgsPelea = imgsPelea;
-
+		this.bloqueado = bloqueado;
 	}
 
 
@@ -57,7 +56,8 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 	}
 
 	public int atacar() {
-
+		
+		Controlador.iniciarSonido(sonido, Controlador.procesarSonidosJugador(vocesPersonaje));
 		golpe = (int) (1 + Math.random() * potencia);
 		if (cansancio - golpe >= 0) {
 			cansancio -= golpe;
@@ -84,7 +84,7 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 
 	}
 
-	public void descansa() {
+	public void descansar() {
 
 		int aleatorioFisico = (int) (1 + Math.random() * fisico);
 
@@ -99,6 +99,14 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 
 	
 	
+	public boolean isBloqueado() {
+		return bloqueado;
+	}
+
+	public void setBloqueado(boolean bloqueado) {
+		this.bloqueado = bloqueado;
+	}
+
 	public void setVida(int vida) {
 		this.vida = vida;
 	}
@@ -107,16 +115,8 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 		this.cansancio = cansancio;
 	}
 
-	public void setVista(Vista vista) {
-		this.vista = vista;
-	}
-
 	public Combate getCombate() {
 		return combate;
-	}
-
-	public void setRival(Luchador rival) {
-		this.rival = rival;
 	}
 
 	public void setCombate(Combate combate) {
@@ -187,78 +187,6 @@ public class Luchador extends Thread implements Comparable<Luchador>{
 		return fisico;
 	}
 
-	public void run() {
-
-		while (!combate.isTerminado() && !combate.isCombateInterrumpido()) {
-
-			if (combate.isTurnoComputadora()) {
-				if (cansancio < 10) {
-					combate.descansar(this);
-					combate.setTurnoComputadora(false);
-					actualizarVista();
-					activarAcciones();
-					
-					
-				} else if (vida < rival.vida) {
-					
-					int aleatorio = (int)(1+Math.random()*2);
-					switch (aleatorio) {
-					case 1:
-						combate.defender(this);
-						combate.setTurnoComputadora(false);
-						actualizarVista();
-						activarAcciones();
-						break;
-					case 2:
-						combate.atacar(this, rival);
-						combate.setTurnoComputadora(false);
-						Controlador.iniciarSonido(sonido,Controlador.procesarSonidosJugador(vocesPersonaje));
-						vista.ponerImagenAJlabel(vista.getLblImagenJ2Juego(), Controlador.cambiarImagenFondoAlAtacar(imgsPelea), false);
-						actualizarVista();
-						activarAcciones();
-						break;
-					}
-
-				} else {
-					combate.atacar(this, rival);
-					combate.setTurnoComputadora(false);
-					Controlador.iniciarSonido(sonido,Controlador.procesarSonidosJugador(vocesPersonaje));
-					vista.ponerImagenAJlabel(vista.getLblImagenJ2Juego(), Controlador.cambiarImagenFondoAlAtacar(imgsPelea), false);
-					actualizarVista();
-					activarAcciones();
-				}
-			}
-
-			try {
-				sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-
-	private void activarAcciones() {
-		vista.getBtnAtacar().setEnabled(true);
-		vista.getBtnDefender().setEnabled(true);
-		vista.getBtnDescansar().setEnabled(true);
-
-	}
-	public void actualizarVista() {
-		
-		vista.getLblVidaPj1().setText(rival.getVida() + "");
-		vista.getLblCansancioPj1().setText(rival.getCansancio() + " %");
-		vista.getProgressBarVidaPJ1().setValue(rival.getVida());
-		vista.getProgressBarVitalidadPj1().setValue(rival.getCansancio());
-		vista.getLblMensajePj1().setText(rival.getMensajePelea());
-		
-		vista.getLblVidaPj2().setText(vida + "");
-		vista.getLblCansancioPj2().setText(cansancio + " %");
-		vista.getProgressBarVidaPJ2().setValue(vida);
-		vista.getProgressBarVitalidadPj2().setValue(cansancio);
-		vista.getLblMensajePj2().setText(this.mensajePelea);
-
-	}
 
 	@Override
 	public int compareTo(Luchador o) {

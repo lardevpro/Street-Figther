@@ -16,7 +16,7 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.ResourceBundle.Control;
+
 
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
@@ -40,7 +40,8 @@ public class Vista extends JFrame {
 			btnVolverAtrasDesdeLeyendas, btnAtacar, btnDefender, btnDescansar, btnVolverDesdeJugar, btnJugar;
 
 	private JComboBox<String> comboBoxNombresHistoria;
-	private JPanel contentPane, panelHistoriaPersonajes, panelMenu, panelSeleccionPersonajes, panelJuego;
+	private JPanel contentPane, panelHistoriaPersonajes, panelMenu, panelSeleccionPersonajes, panelJuego,
+					panelInformacion,panelDesbloqueoPersonaje;
 
 	private JLabel lblEstatura, lblPesoHistoria, lblEdadHIstoria, lblNombreHIstoria, lblPersonajeHistoriaImagen,
 			lblAvisosHistoria, lblNewLabel_potencia, lblNewLabel_velocidad, lblNewLabel_fisico, lblPotencia,
@@ -50,35 +51,20 @@ public class Vista extends JFrame {
 			lblImgJ1Seleccionado, lblImgJ2Seleccionado, lblTitulo1PjSeleccionarPersonaje,
 			lblTitulo2PjSeleccionarPersonaje, lblTiempo, labelKO, lblImagenJ1Juego, lblImagenJ2Juego, lblVidaPj2,
 			lblVidaPj1, lblCansancioPj2, lblCansancioPj1, lblEliminado2, lblEliminado1, lblNewLabel, lblMensajePj1,
-			lblMensajePj2, lblAvisosSeleccionarJugador;
+			lblMensajePj2, lblAvisosSeleccionarJugador,lblStreetMinis,lblP,lblDesbloquearPersonajeNombreIMG,lblFondoInfo,
+			lblNombreDesbloqueo,lblLogoStreetFighterInfo,lblEdadDesbloqueoPersonaje,lblEstaturaDesbloqueoPersonaje,
+			lblPesoDesbloqueoPersonaje,lblFisicoDesbloqueoPersonaje,labelVelocidadDesbloqueoPersonaje,lblTituloDesbloqueoPersonaje,
+			lblImgJugadorDesbloqueado,lblPtenciaDesbloquearPersonaje,lblNewLabel_11,lblCandado,lblMensajeDesbloqueado;
 
 	private ArrayList<JLabel> sobrePuesoParaElimianr, seleccionPersonaje;
 	private JProgressBar progressBarVidaPJ2, progressBarVidaPJ1;
 	private JProgressBar progressBarVitalidadPj1, progressBarVitalidadPj2;
 	private JTextArea textAreaDescripcionHistoria, textAreaScrollPanel;
-	private JPanel panelInformacion;
 	private JScrollPane scrollPaneInfo;
-	private JLabel lblLogoStreetFighterInfo;
 	private JButton btnVolverDeInfo;
-	private JLabel lblFondoInfo;
-	private JLabel lblDesbloquearPersonajeNombreIMG;
-	private JLabel lblStreetMinis;
-	private JLabel lblP;
-	private JLabel lblNombreDesbloqueo;
-	private JLabel lblEdadDesbloqueoPersonaje;
-	private JLabel lblEstaturaDesbloqueoPersonaje;
-	private JLabel lblPesoDesbloqueoPersonaje;
-	private JLabel lblFisicoDesbloqueoPersonaje;
-	private JLabel labelVelocidadDesbloqueoPersonaje;
-	private JLabel lblTituloDesbloqueoPersonaje;
-	private JLabel lblImgJugadorDesbloqueado;
 	private JButton btnContinuarDesbloquePersonaje;
-	private JPanel panelDesbloqueoPersonaje;
-	private JLabel lblPtenciaDesbloquearPersonaje;
-	private JLabel lblNewLabel_11;
 	private JTextPane textPaneDescripcionDesbloqueo;
-	private JLabel lblCandado;
-	private JLabel lblMensajeDesbloqueado;
+
 
 	/**
 	 * Launch the application.
@@ -992,13 +978,6 @@ public class Vista extends JFrame {
 		seleccionPersonaje.clear();
 		sobrePuesoParaElimianr.clear();
 
-		int desbloqueados = 0;
-
-		if (!Controlador.modoHistoria)
-			desbloqueados = 15;
-		else
-			desbloqueados = Controlador.personajesDesbloqueados;
-
 		int nombreLabel = 0;
 
 		int ancho = 70;
@@ -1023,7 +1002,7 @@ public class Vista extends JFrame {
 				label.setName(nombreLabel + "");
 				sobrePuesto.setName(nombreLabel + "");
 
-				if (nombreLabel < desbloqueados) {
+		
 
 					panelSeleccionPersonajes.add(sobrePuesto);
 					panelSeleccionPersonajes.add(label);
@@ -1031,16 +1010,7 @@ public class Vista extends JFrame {
 					sobrePuesoParaElimianr.add(sobrePuesto);
 					seleccionPersonaje.add(label);
 					nombreLabel++;
-
-				} else {
-					label.setEnabled(false);
-					panelSeleccionPersonajes.add(sobrePuesto);
-					panelSeleccionPersonajes.add(label);
-
-					sobrePuesoParaElimianr.add(sobrePuesto);
-					seleccionPersonaje.add(label);
-					nombreLabel++;
-				}
+				
 			}
 		}
 

@@ -15,8 +15,8 @@ import controlador.Controlador;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.util.ArrayList;
-
 
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
@@ -27,21 +27,20 @@ import javax.swing.JTextPane;
 
 public class Vista extends JFrame {
 
+	private ArrayList<Integer> posicionesDesbloqueadas;
 	private static final long serialVersionUID = 1L;
-	private String rutasImagenesSeleccionPersonaje[][] = {
-			{ "ryu_select.jpeg", "ken_select.jpeg", "guile_select.jpeg", "chun_li_select.jpeg", "honda_select.jpeg" },
-			{ "dalshim_select.jpeg", "blanka_select.jpeg", "zangief_select.jpeg", "dee_jay_select.jpeg",
-					"t_hawk_select.jpeg" },
-			{ "cammy_select.jpeg", "balrog_select.jpeg", "vega_select.jpeg", "sagat_select.jpeg",
-					"mbison_select.jpeg" } };
+	private String rutasImagenesSeleccionPersonaje[] = { "ryu_select.jpeg", "ken_select.jpeg", "guile_select.jpeg"
+			, "chun_li_select.jpeg", "honda_select.jpeg","dalshim_select.jpeg", "blanka_select.jpeg", 
+			"zangief_select.jpeg", "dee_jay_select.jpeg","t_hawk_select.jpeg" ,"cammy_select.jpeg", 
+			"balrog_select.jpeg", "vega_select.jpeg", "sagat_select.jpeg","mbison_select.jpeg"  };
 
 	private JButton btnLeyendaPersonajes, btnInfomracion, btnEnfrentamiento, btnModoHistoria,
-			btnMostrarHistoriaPersonaje, btnSeleccionarPersonaje, btnVolverDesdeSeleccionarPersonaje,
+			btnMostrarHistoriaPersonaje, btnSeleccionarJugador, btnVolverDesdeSeleccionarPersonaje,
 			btnVolverAtrasDesdeLeyendas, btnAtacar, btnDefender, btnDescansar, btnVolverDesdeJugar, btnJugar;
 
 	private JComboBox<String> comboBoxNombresHistoria;
 	private JPanel contentPane, panelHistoriaPersonajes, panelMenu, panelSeleccionPersonajes, panelJuego,
-					panelInformacion,panelDesbloqueoPersonaje;
+			panelInformacion, panelDesbloqueoPersonaje;
 
 	private JLabel lblEstatura, lblPesoHistoria, lblEdadHIstoria, lblNombreHIstoria, lblPersonajeHistoriaImagen,
 			lblAvisosHistoria, lblNewLabel_potencia, lblNewLabel_velocidad, lblNewLabel_fisico, lblPotencia,
@@ -51,12 +50,13 @@ public class Vista extends JFrame {
 			lblImgJ1Seleccionado, lblImgJ2Seleccionado, lblTitulo1PjSeleccionarPersonaje,
 			lblTitulo2PjSeleccionarPersonaje, lblTiempo, labelKO, lblImagenJ1Juego, lblImagenJ2Juego, lblVidaPj2,
 			lblVidaPj1, lblCansancioPj2, lblCansancioPj1, lblEliminado2, lblEliminado1, lblNewLabel, lblMensajePj1,
-			lblMensajePj2, lblAvisosSeleccionarJugador,lblStreetMinis,lblP,lblDesbloquearPersonajeNombreIMG,lblFondoInfo,
-			lblNombreDesbloqueo,lblLogoStreetFighterInfo,lblEdadDesbloqueoPersonaje,lblEstaturaDesbloqueoPersonaje,
-			lblPesoDesbloqueoPersonaje,lblFisicoDesbloqueoPersonaje,labelVelocidadDesbloqueoPersonaje,lblTituloDesbloqueoPersonaje,
-			lblImgJugadorDesbloqueado,lblPtenciaDesbloquearPersonaje,lblNewLabel_11,lblCandado,lblMensajeDesbloqueado;
+			lblMensajePj2, lblAvisosSeleccionarJugador, lblStreetMinis, lblP,
+			lblFondoInfo, lblNombreDesbloqueo, lblLogoStreetFighterInfo, lblEdadDesbloqueoPersonaje,
+			lblEstaturaDesbloqueoPersonaje, lblPesoDesbloqueoPersonaje, lblFisicoDesbloqueoPersonaje,
+			labelVelocidadDesbloqueoPersonaje, lblTituloDesbloqueoPersonaje, lblImgJugadorDesbloqueado,
+			lblPtenciaDesbloquearPersonaje, lblNewLabel_11, lblCandado, lblMensajeDesbloqueado;
 
-	private ArrayList<JLabel> sobrePuesoParaElimianr, seleccionPersonaje;
+	private ArrayList<JLabel> seleccionPersonajes,seleccionComputadora,sobrepuestosComputadora;
 	private JProgressBar progressBarVidaPJ2, progressBarVidaPJ1;
 	private JProgressBar progressBarVitalidadPj1, progressBarVitalidadPj2;
 	private JTextArea textAreaDescripcionHistoria, textAreaScrollPanel;
@@ -64,7 +64,12 @@ public class Vista extends JFrame {
 	private JButton btnVolverDeInfo;
 	private JButton btnContinuarDesbloquePersonaje;
 	private JTextPane textPaneDescripcionDesbloqueo;
-
+	private JButton btnSeleccionarComputadora;
+	private JLabel lblFondoGanador;
+	private JButton btnVovlerDesdeGanador;
+	private JLabel lblLogoStreetFighter;
+	private JLabel lblimgGanador;
+	private JPanel panelGanador;
 
 	/**
 	 * Launch the application.
@@ -88,8 +93,17 @@ public class Vista extends JFrame {
 	 */
 	public Vista() {
 
-		seleccionPersonaje = new ArrayList<JLabel>();
-		sobrePuesoParaElimianr = new ArrayList<JLabel>();
+		posicionesDesbloqueadas= new ArrayList<Integer>();
+		posicionesDesbloqueadas.add(0);
+		posicionesDesbloqueadas.add(1);
+		posicionesDesbloqueadas.add(2);
+		posicionesDesbloqueadas.add(3);
+		posicionesDesbloqueadas.add(4);
+		
+		
+		seleccionPersonajes = new ArrayList<JLabel>();
+		seleccionComputadora = new ArrayList<JLabel>();
+		sobrepuestosComputadora = new ArrayList<JLabel>();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 853, 640);
 		contentPane = new JPanel();
@@ -97,6 +111,36 @@ public class Vista extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		panelGanador = new JPanel();
+		panelGanador.setBounds(-2, 0, 849, 613);
+		contentPane.add(panelGanador);
+		panelGanador.setLayout(null);
+		panelGanador.setVisible(false);
+		
+		lblimgGanador = new JLabel("");
+		lblimgGanador.setBounds(220, 159, 432, 395);
+		panelGanador.add(lblimgGanador);
+		
+		lblLogoStreetFighter = new JLabel("");
+		lblLogoStreetFighter.setBounds(21, 10, 234, 108);
+		panelGanador.add(lblLogoStreetFighter);
+		
+		btnVovlerDesdeGanador = new JButton("Continuar");
+		btnVovlerDesdeGanador.setBackground(new Color(255, 255, 0));
+		btnVovlerDesdeGanador.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnVovlerDesdeGanador.setBounds(21, 565, 128, 21);
+		panelGanador.add(btnVovlerDesdeGanador);
+		
+		JLabel lblImgWIN = new JLabel("");
+		lblImgWIN.setBounds(308, 18, 390, 100);
+		panelGanador.add(lblImgWIN);
+		
+		lblFondoGanador = new JLabel("");
+		lblFondoGanador.setBounds(0, 0, 849, 603);
+		panelGanador.add(lblFondoGanador);
+
+		
 
 		panelDesbloqueoPersonaje = new JPanel();
 		panelDesbloqueoPersonaje.setBounds(0, 0, 847, 613);
@@ -150,10 +194,6 @@ public class Vista extends JFrame {
 		lblNewLabel_10.setBounds(29, 365, 82, 21);
 		panelDesbloqueoPersonaje.add(lblNewLabel_10);
 
-		lblDesbloquearPersonajeNombreIMG = new JLabel("");
-		lblDesbloquearPersonajeNombreIMG.setBounds(77, 10, 208, 69);
-		panelDesbloqueoPersonaje.add(lblDesbloquearPersonajeNombreIMG);
-
 		lblP = new JLabel("Potencia:");
 		lblP.setForeground(new Color(255, 255, 0));
 		lblP.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
@@ -162,44 +202,44 @@ public class Vista extends JFrame {
 
 		lblNombreDesbloqueo = new JLabel("");
 		lblNombreDesbloqueo.setForeground(new Color(255, 255, 255));
-		lblNombreDesbloqueo.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNombreDesbloqueo.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNombreDesbloqueo.setFont(new Font("Bookman Old Style", Font.BOLD, 17));
-		lblNombreDesbloqueo.setBounds(121, 198, 101, 33);
+		lblNombreDesbloqueo.setBounds(131, 205, 101, 33);
 		panelDesbloqueoPersonaje.add(lblNombreDesbloqueo);
 
 		lblEdadDesbloqueoPersonaje = new JLabel("");
 		lblEdadDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
-		lblEdadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEdadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblEdadDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
 		lblEdadDesbloqueoPersonaje.setBounds(131, 229, 101, 33);
 		panelDesbloqueoPersonaje.add(lblEdadDesbloqueoPersonaje);
 
 		lblEstaturaDesbloqueoPersonaje = new JLabel("");
 		lblEstaturaDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
-		lblEstaturaDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEstaturaDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblEstaturaDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
-		lblEstaturaDesbloqueoPersonaje.setBounds(121, 260, 101, 33);
+		lblEstaturaDesbloqueoPersonaje.setBounds(131, 260, 101, 33);
 		panelDesbloqueoPersonaje.add(lblEstaturaDesbloqueoPersonaje);
 
 		lblPesoDesbloqueoPersonaje = new JLabel("");
 		lblPesoDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
-		lblPesoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPesoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblPesoDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
-		lblPesoDesbloqueoPersonaje.setBounds(121, 291, 101, 33);
+		lblPesoDesbloqueoPersonaje.setBounds(131, 291, 101, 33);
 		panelDesbloqueoPersonaje.add(lblPesoDesbloqueoPersonaje);
 
 		lblFisicoDesbloqueoPersonaje = new JLabel("");
 		lblFisicoDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
-		lblFisicoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFisicoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblFisicoDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
-		lblFisicoDesbloqueoPersonaje.setBounds(121, 322, 101, 33);
+		lblFisicoDesbloqueoPersonaje.setBounds(131, 322, 101, 33);
 		panelDesbloqueoPersonaje.add(lblFisicoDesbloqueoPersonaje);
 
 		labelVelocidadDesbloqueoPersonaje = new JLabel("");
 		labelVelocidadDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
-		labelVelocidadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
+		labelVelocidadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		labelVelocidadDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
-		labelVelocidadDesbloqueoPersonaje.setBounds(121, 353, 101, 33);
+		labelVelocidadDesbloqueoPersonaje.setBounds(131, 353, 101, 33);
 		panelDesbloqueoPersonaje.add(labelVelocidadDesbloqueoPersonaje);
 
 		lblTituloDesbloqueoPersonaje = new JLabel("");
@@ -207,9 +247,10 @@ public class Vista extends JFrame {
 		panelDesbloqueoPersonaje.add(lblTituloDesbloqueoPersonaje);
 
 		lblPtenciaDesbloquearPersonaje = new JLabel("");
+		lblPtenciaDesbloquearPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblPtenciaDesbloquearPersonaje.setForeground(new Color(255, 255, 255));
 		lblPtenciaDesbloquearPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
-		lblPtenciaDesbloquearPersonaje.setBounds(121, 389, 101, 33);
+		lblPtenciaDesbloquearPersonaje.setBounds(131, 389, 101, 33);
 		panelDesbloqueoPersonaje.add(lblPtenciaDesbloquearPersonaje);
 
 		lblNewLabel_11 = new JLabel("Descripción:");
@@ -649,12 +690,50 @@ public class Vista extends JFrame {
 
 	// METODO PARA INSERTAR IMAGENES EN LOS JLABEL
 
+	
+	
 	public JButton getBtnLeyendaPersonajes() {
 		return btnLeyendaPersonajes;
 	}
+	public JPanel getPanelGanador() {
+		return panelGanador;
+	}
 
-	public JLabel getLblDesbloquearPersonajeNombreIMG() {
-		return lblDesbloquearPersonajeNombreIMG;
+	public JButton getBtnVovlerDesdeGanador() {
+		return btnVovlerDesdeGanador;
+	}
+
+	public JLabel getLblimgGanador() {
+		return lblimgGanador;
+	}
+
+	public ArrayList<Integer> getPosicionesDesbloqueadas() {
+		return posicionesDesbloqueadas;
+	}
+
+	public void aniadirPosicionDesbloqueada (int posicion) {
+		posicionesDesbloqueadas.add(posicion);
+	}
+
+	public String[] getRutasImagenesSeleccionPersonaje() {
+		return rutasImagenesSeleccionPersonaje;
+	}
+
+	public ArrayList<JLabel> getSeleccionPersonajes() {
+		return seleccionPersonajes;
+	}
+
+	public JButton getBtnSeleccionarComputadora() {
+		return btnSeleccionarComputadora;
+	}
+
+	public JButton getBtnSeleccionarJugador() {
+		return btnSeleccionarJugador;
+	}
+
+	
+	public JLabel getLblNombreDesbloqueo() {
+		return lblNombreDesbloqueo;
 	}
 
 	public JTextPane getTextPaneDescripcionDesbloqueo() {
@@ -912,17 +991,8 @@ public class Vista extends JFrame {
 	public JPanel getPanelSeleccionPersonajes() {
 		return panelSeleccionPersonajes;
 	}
-
-	// PONER BORDE A JLABEL
-	public void ponerBordeJlabel(JLabel label) {
-		Border borde = new LineBorder(Color.DARK_GRAY, 5);
-		label.setBorder(borde);
-	}
-
-	public JButton getBtnSeleccionarPersonaje() {
-		return btnSeleccionarPersonaje;
-	}
-
+	
+	
 	public JButton getBtnVolverDesdeSeleccionarPersonaje() {
 		return btnVolverDesdeSeleccionarPersonaje;
 	}
@@ -943,77 +1013,56 @@ public class Vista extends JFrame {
 		return lblTitulo2PjSeleccionarPersonaje;
 	}
 
-	public ArrayList<JLabel> getSobrePuesoParaElimianr() {
-		return sobrePuesoParaElimianr;
+
+	// PONER BORDE A JLABEL
+	public void ponerBordeJlabel(JLabel label) {
+		Border borde = new LineBorder(Color.DARK_GRAY, 5);
+		label.setBorder(borde);
+	}
+	
+	
+	public ArrayList<JLabel> getSeleccionComputadora() {
+		return seleccionComputadora;
 	}
 
-	public ArrayList<JLabel> getSeleccionPersonaje() {
-		return seleccionPersonaje;
+	public ArrayList<JLabel> getSobrepuestosComputadora() {
+		return sobrepuestosComputadora;
+	}
+	
+
+	public JLabel getLabelVelocidadDesbloqueoPersonaje() {
+		return labelVelocidadDesbloqueoPersonaje;
 	}
 
 	// METODO PARA PONER IMAGENES A LOS JLABEL
 	public void ponerImagenAJlabel(JLabel label, String nombreImagen, boolean opaque) {
 
+		
+
 		ImageIcon icono = new ImageIcon("src/imagenes/" + nombreImagen);
-		java.awt.Image imagen = icono.getImage();
-		java.awt.Image nuevaImagen = imagen.getScaledInstance(label.getWidth(), label.getHeight(),
-				java.awt.Image.SCALE_SMOOTH);
+		Image imagen = icono.getImage();
+		Image nuevaImagen = imagen.getScaledInstance(label.getWidth(), label.getHeight(),Image.SCALE_SMOOTH);
 		icono = new ImageIcon(nuevaImagen);
 		label.setIcon(icono);
 		label.setOpaque(opaque);
-		label.revalidate();
-		label.repaint();
 	}
 
 	// CARGA DE BOTONES
 	public void caragarPanelSeleccionDePersonajes() {
 
+		
+		
+		
 		panelSeleccionPersonajes = new JPanel();
 		panelSeleccionPersonajes.setBounds(2, 0, 835, 603);
 		contentPane.add(panelSeleccionPersonajes);
 		panelSeleccionPersonajes.setLayout(null);
 		panelSeleccionPersonajes.setVisible(false);
-
-		panelSeleccionPersonajes.removeAll();
-		seleccionPersonaje.clear();
-		sobrePuesoParaElimianr.clear();
-
-		int nombreLabel = 0;
-
-		int ancho = 70;
-		int alto = 70;
-		int posXInicial = 250; // Posición X inicial
-		int posY = 100; // Posición Y inicial
-		int separacionX = 10; // Separación horizontal entre los JLabels
-
-		for (int fila = 0; fila < 3; fila++) {
-			for (int columna = 0; columna < 5; columna++) {
-				int posX = posXInicial + columna * (ancho + separacionX);
-
-				JLabel label = new JLabel();
-				JLabel sobrePuesto = new JLabel();
-
-				sobrePuesto.setBounds(posX, posY + fila * (alto + 20), ancho, alto);
-				sobrePuesto.setOpaque(false);
-
-				label.setBounds(posX, posY + fila * (alto + 20), ancho, alto);
-				ponerImagenAJlabel(label, rutasImagenesSeleccionPersonaje[fila][columna], true);
-
-				label.setName(nombreLabel + "");
-				sobrePuesto.setName(nombreLabel + "");
-
 		
-
-					panelSeleccionPersonajes.add(sobrePuesto);
-					panelSeleccionPersonajes.add(label);
-
-					sobrePuesoParaElimianr.add(sobrePuesto);
-					seleccionPersonaje.add(label);
-					nombreLabel++;
-				
-			}
-		}
-
+		panelSeleccionPersonajes.removeAll();
+		
+		ponerJlabelsPesonajes();
+		
 		lblPotenciaSeleccionarPersonaje = new JLabel("?");
 		lblPotenciaSeleccionarPersonaje.setForeground(new Color(255, 255, 255));
 		lblPotenciaSeleccionarPersonaje.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -1065,11 +1114,11 @@ public class Vista extends JFrame {
 		lblNewLabelValido3.setOpaque(true);
 		panelSeleccionPersonajes.add(lblNewLabelValido3);
 
-		btnSeleccionarPersonaje = new JButton("SELECCIONAR");
-		btnSeleccionarPersonaje.setForeground(new Color(0, 0, 0));
-		btnSeleccionarPersonaje.setBackground(new Color(255, 255, 0));
-		btnSeleccionarPersonaje.setBounds(42, 22, 157, 33);
-		panelSeleccionPersonajes.add(btnSeleccionarPersonaje);
+		btnSeleccionarJugador = new JButton(" Seleccionar Jugador");
+		btnSeleccionarJugador.setForeground(new Color(0, 0, 0));
+		btnSeleccionarJugador.setBackground(new Color(255, 255, 0));
+		btnSeleccionarJugador.setBounds(152, 104, 288, 21);
+		panelSeleccionPersonajes.add(btnSeleccionarJugador);
 
 		btnVolverDesdeSeleccionarPersonaje = new JButton("VOLVER");
 		btnVolverDesdeSeleccionarPersonaje.setBackground(new Color(255, 255, 128));
@@ -1139,14 +1188,110 @@ public class Vista extends JFrame {
 
 		panelSeleccionPersonajes.add(lblAvisosSeleccionarJugador);
 
+		btnSeleccionarComputadora = new JButton("Seleccionar computadora");
+		btnSeleccionarComputadora.setBackground(new Color(255, 255, 0));
+		btnSeleccionarComputadora.setBounds(495, 104, 297, 21);
+		panelSeleccionPersonajes.add(btnSeleccionarComputadora);
+		
 		FondoSeleccionPersonaje = new JLabel("");
+		FondoSeleccionPersonaje.setBackground(new Color(255, 255, 0));
 		FondoSeleccionPersonaje.setHorizontalAlignment(SwingConstants.CENTER);
 		FondoSeleccionPersonaje.setBounds(0, 0, 845, 603);
 		ponerImagenAJlabel(FondoSeleccionPersonaje, "fondo_seleccion_personaje.png", false);
-		panelSeleccionPersonajes.add(FondoSeleccionPersonaje);
-
+		panelSeleccionPersonajes.add(FondoSeleccionPersonaje); 
+		
+		
 	}
 
+	public void ponerJlabelsPesonajes() {
+		
+		seleccionComputadora.clear();
+		seleccionPersonajes.clear();
+		
+			
+
+		int fila = 0;
+		int columna = 0;
+		int contador = 0;
+		int ancho = 50;
+		int alto = 50;
+		int nombreLabel = 0;
+
+		int posXInicial = 150; // Posición X inicial
+		int posY = 130; // Posición Y inicial
+		int separacionX = 10; // Separación horizontal entre los JLabels
+		for (fila = 0; fila < 3; fila++) {
+			for (columna = 0; columna < 5; columna++) {
+				
+				JLabel label = new JLabel();
+
+				if (posicionesDesbloqueadas.contains(contador) || !Controlador.modoHistoria) {
+				
+					int posX = posXInicial + columna * (ancho + separacionX);
+
+					label.setBounds(posX, posY + fila * (alto + 20), ancho, alto);
+					ponerImagenAJlabel(label, rutasImagenesSeleccionPersonaje[nombreLabel], true);
+
+					label.setName(nombreLabel + "");
+
+					panelSeleccionPersonajes.add(label);
+					seleccionPersonajes.add(label);
+					
+					nombreLabel++;
+					contador++;
+
+				} else {
+					int posX = posXInicial + columna * (ancho + separacionX);
+
+					label.setBounds(posX, posY + fila * (alto + 20), ancho, alto);
+					ponerImagenAJlabel(label, "interrogacion_historia.png", true);
+
+					label.setName(nombreLabel + "");
+
+					panelSeleccionPersonajes.add(label);
+					seleccionPersonajes.add(label);
+					
+					nombreLabel++;
+					contador++;
+					
+				}
+			}
+		}
+
+		
+		nombreLabel = 0;
+		int posXInicialB = 500; // Posición X inicial
+		int posYB = 130; // Posición Y inicial
+		int separacionXB = 10; // Separación horizontal entre los JLabels
+
+		for (fila = 0; fila < 3; fila++) {
+			for (columna = 0; columna < 5; columna++) {
+				int posX = posXInicialB + columna * (ancho + separacionXB);
+				
+				JLabel label = new JLabel();
+				JLabel sobrePuesto = new JLabel();
+
+				sobrePuesto.setBounds(posX, posYB + fila * (alto + 20), ancho, alto);
+				sobrePuesto.setOpaque(false);
+
+				label.setBounds(posX, posYB + fila * (alto + 20), ancho, alto);
+				ponerImagenAJlabel(label, rutasImagenesSeleccionPersonaje[nombreLabel], true);
+
+				label.setName(nombreLabel + "");
+				sobrePuesto.setName(nombreLabel + "");
+
+				
+				panelSeleccionPersonajes.add(sobrePuesto);
+				panelSeleccionPersonajes.add(label);
+
+				sobrepuestosComputadora.add(sobrePuesto);
+				seleccionComputadora.add(label);
+				nombreLabel++;
+
+			}
+		}
+	}
+	
 	public String cargarScrollPanel() {
 
 		String instrucciones = " *** Instrucciones del Juego ***\n" + "\n" + " *** 1. Objetivo General ***\n"

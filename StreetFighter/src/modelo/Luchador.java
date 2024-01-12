@@ -119,6 +119,8 @@ public class Luchador implements Comparable<Luchador>{
 		return combate;
 	}
 
+	
+	
 	public void setCombate(Combate combate) {
 		this.combate = combate;
 	}

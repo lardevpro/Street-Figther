@@ -19,35 +19,32 @@ import vista.Vista;
 
 public class Controlador implements ActionListener, MouseListener {
 
-	private int pJ1 = -1, combatesGanadosEnHistoriaDeSeguido, posicionSeleccionPersonaje = -1;
-
-	private boolean combateGanado = false, pJ1Seleccionado = false, modoHistoria = false, modoEnfrentamiento = false,
-			venirDesdeInicio = true;
+	private int combatesGanadosEnHistoriaDeSeguido = 0, posicionSeleccionPersonaje = -1;
+	public static int personajesDesbloqueados = 0;
+	public static boolean modoHistoria = false;
+	private boolean combateGanado = false, modoEnfrentamiento = false, volverDesdeInicio = true,
+			jugadorSeleccionado = false, computadoraSeleccionada = false, escuchadoresPanelSeleccionPersonaje = false;
 	private Combate combate;
 	private Vista vista;
 	private Musica musica, sonido;
 	private Luchador jugador, computadora;
-	private ArrayList<Luchador> luchadores;
-
+	private ArrayList<Luchador> jugadores, computadoras;
 	private DefaultComboBoxModel<String> jComboLuchadores;
 	private ArrayList<Integer> personajesEliminadosPosicion;
-
-	public Controlador(Luchador pJ2) {
-		this.computadora = pJ2;
-	}
 
 	public Controlador(Vista vista) {
 
 		this.vista = vista;
 		this.personajesEliminadosPosicion = new ArrayList<Integer>();
 		jComboLuchadores = new DefaultComboBoxModel<String>();
-
 		this.sonido = null;
 		this.musica = new Musica("src/musica/musica_inicio.wav");
 		musica.reproducir();
 		iniciarActionListeners();
-		luchadores = new ArrayList<Luchador>();
-		cargarLuchadores(luchadores);
+		jugadores = new ArrayList<Luchador>();
+		computadoras = new ArrayList<Luchador>();
+		cargarLuchadores(jugadores);
+		cargarLuchadores(computadoras);
 	}
 
 	@Override
@@ -67,7 +64,6 @@ public class Controlador implements ActionListener, MouseListener {
 
 		} else if (e.getSource() == vista.getBtnEnfrentamiento()) {
 
-			modoEnfrentamiento = true;
 			modoEnfrentamiento();
 
 		} else if (e.getSource() == vista.getBtnVolverDeInfo()) {
@@ -80,15 +76,19 @@ public class Controlador implements ActionListener, MouseListener {
 
 		} else if (e.getSource() == vista.getBtnVolverDesdeSeleccionarPersonaje()) {
 
+			iniciarSonido(sonido, "seleccion");
 			volverAIncioDesdeSeleccionPersonaje();
 
-		} else if (e.getSource() == vista.getBtnSeleccionarPersonaje()) {
+		} else if (e.getSource() == vista.getBtnSeleccionarJugador()) {
 
-			if (!modoHistoria) {
-				seleccionarPersonajesModoEnfrentamiento();
-			} else {
-				seleccionarPersonajesModoHistoria();
-			}
+			seleccionarJugadorModoEnfrentamiento();
+
+		} else if (e.getSource() == vista.getBtnSeleccionarComputadora()) {
+
+			if (modoEnfrentamiento)
+				seleccionarComputadoraModoEnfrentamiento();
+			else if (modoHistoria)
+				seleccionarComputadoraModoHistoria();
 
 		} else if (e.getSource() == vista.getBtnJugar()) {
 
@@ -96,37 +96,53 @@ public class Controlador implements ActionListener, MouseListener {
 
 		} else if (e.getSource() == vista.getBtnVolverDesdeJugar()) {
 
-			if (!modoHistoria) {
+			if (modoEnfrentamiento) {
 
-				jugador = null;
-				computadora = null;
-				pJ1Seleccionado = false;
-				posicionSeleccionPersonaje = -1;
-				pJ1 = -1;
-				combate.setCombateInterrumpido(true);
-				modoEnfrentamiento();
-				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
+				refrescarModoHistoriaSeleccionarPersonajes();
 
-			}/* else if (combatesGanadosEnHistoriaDeSeguido <= 4 && modoHistoria) {
+			} else if (!combateGanado && modoHistoria) {
 
-				tacharPersonajeElimiando();
+				reiniciarModoHistoria();
+
+			} else if (combatesGanadosEnHistoriaDeSeguido <= 4 && modoHistoria) {
+
+				mostrarPanelQueCorresponda(false);
+
+			} else if (combatesGanadosEnHistoriaDeSeguido == 5 && modoHistoria) {
+
+				mostrarPanelQueCorresponda(true);
+
+			} else if (modoHistoria && !combateGanado) {
 				
-			} */else if (combatesGanadosEnHistoriaDeSeguido == 1) {
-
-				luchadores.get(posicionSeleccionPersonaje).setBloqueado(false);
-				mostrarPersonajeADesbloquearYActivarJLabelsEscuchadorEnabled();
-				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelDesbloqueoPersonaje(), 1);
-			
-
-			} else if(modoHistoria && !combateGanado) {
 				modoHistoria();
 			}
 
 		} else if (e.getSource() == vista.getBtnContinuarDesbloquePersonaje()) {
 
-			irAlSiguientePanel(vista.getPanelDesbloqueoPersonaje(), vista.getPanelMenu(), 1);
-			iniciarMusica("musica_inicio");
+			detenerMuscia();
+			iniciarSonido(sonido, "seleccion");
+			irAlSiguientePanel(vista.getPanelDesbloqueoPersonaje(), vista.getPanelSeleccionPersonajes(), 1);
 			
+		} else if (e.getSource() == vista.getBtnVovlerDesdeGanador()) {
+			
+			detenerMuscia();
+			iniciarSonido(sonido, "seleccion");
+			
+			
+			
+			ArrayList<Integer> posicionesDesbloqueadas = vista.getPosicionesDesbloqueadas();
+			
+			if (!posicionesDesbloqueadas.contains(posicionSeleccionPersonaje)) {
+				desbloquearPersonajeVencido();
+				mostrarPersonajeADesbloquear();
+				irAlSiguientePanel(vista.getPanelGanador(), vista.getPanelDesbloqueoPersonaje(), 1);
+				posicionesDesbloqueadas.add(posicionSeleccionPersonaje);
+			}else {
+				irAlSiguientePanel(vista.getPanelGanador(), vista.getPanelSeleccionPersonajes(), 1);
+			}
+			
+			irAlSiguientePanel(vista.getPanelGanador(), vista.getPanelSeleccionPersonajes(), 1);
+
 		} else if (e.getSource() == vista.getBtnAtacar()) {
 
 			atacar();
@@ -147,26 +163,113 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-	private void mostrarPersonajeADesbloquearYActivarJLabelsEscuchadorEnabled() {
+	private void mostrarPanelQueCorresponda(boolean ganador) {
 
-		Luchador desbloqueado = luchadores.get(posicionSeleccionPersonaje);
+		refrescarBotonesSeleccionar();
+		tacharPersonajeElimiando();
 
-		ArrayList<JLabel> labels = vista.getSeleccionPersonaje();
-		ArrayList<JLabel> sobrepuestos = vista.getSobrePuesoParaElimianr();
+		ArrayList<Integer> posicionesDesbloqueadas = vista.getPosicionesDesbloqueadas();
+		if (!posicionesDesbloqueadas.contains(posicionSeleccionPersonaje)) {
+			if (ganador) {
+				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelGanador(), 1);
+				mostrarDatosGanador();
+			} else {
+				desbloquearPersonajeVencido();
+				mostrarPersonajeADesbloquear();
+				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelDesbloqueoPersonaje(), 1);
+				posicionesDesbloqueadas.add(posicionSeleccionPersonaje);
+			}
+		} else {
+			if (ganador) {
+				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelGanador(), 1);
+				mostrarDatosGanador();
+			} else
+				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
+		}
 
-		labels.get(posicionSeleccionPersonaje - 1).addMouseListener(this);
-		sobrepuestos.get(posicionSeleccionPersonaje - 1).addMouseListener(this);
+	}
 
-		iniciarSonido(sonido, "nuevo_personaje_desbloqueado");
+	private void mostrarDatosGanador() {
 
-		vista.getLblEdadDesbloqueoPersonaje().setText(desbloqueado.getEdad() + "");
-		vista.getLblEstaturaDesbloqueoPersonaje().setText(desbloqueado.getEstatura() + "");
-		vista.getLblPesoDesbloqueoPersonaje().setText(desbloqueado.getPeso() + "");
-		vista.getLblFisicoDesbloqueoPersonaje().setText(desbloqueado.getFisico() + "");
-		vista.getLblVelocidadSeleccionarPersonaje().setText(desbloqueado.getVelocidad() + "");
-		vista.getLblPtenciaDesbloquearPersonaje().setText(desbloqueado.getPotencia() + "");
-		vista.getTextPaneDescripcionDesbloqueo().setText(desbloqueado.getDescripcion());
-		vista.ponerImagenAJlabel(vista.getLblImgJugadorDesbloqueado(), imagenAleatoria(desbloqueado.getImgPelea()),false);
+		String imgs[] = jugador.getImgPelea();
+		vista.ponerImagenAJlabel(vista.getLblimgGanador(), imgs[0], combateGanado);
+
+	}
+
+	private void desbloquearPersonajeVencido() {
+
+		ArrayList<JLabel> labels = vista.getSeleccionPersonajes();
+		String imgs[] = vista.getRutasImagenesSeleccionPersonaje();
+
+		vista.ponerImagenAJlabel(labels.get(posicionSeleccionPersonaje), imgs[posicionSeleccionPersonaje], true);
+		vista.aniadirPosicionDesbloqueada(posicionSeleccionPersonaje);
+		labels.get(posicionSeleccionPersonaje).addMouseListener(this);
+
+	}
+
+	private void refrescarModoHistoriaSeleccionarPersonajes() {
+
+		combate.setCombateInterrumpido(true);
+		refrescarBotonesSeleccionar();
+		vista.getBtnSeleccionarJugador().setEnabled(true);
+		vista.getBtnSeleccionarJugador().setBackground(Color.YELLOW);
+		irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
+		jugadorSeleccionado = false;
+		computadoraSeleccionada = false;
+		posicionSeleccionPersonaje = -1;
+		limpiarLabelsDeBorde(true);
+		limpiarLabelsDeBorde(false);
+
+	}
+
+	public void reiniciarModoHistoria() {
+
+		combate.setCombateInterrumpido(true);
+		jugador = null;
+		computadora = null;
+		jugadorSeleccionado = false;
+		combate = null;
+		computadoraSeleccionada = false;
+		limpiarTextosSeleccionJugador();
+		reiniciarVistaJugadores();
+		limpiarLabelsDeBorde(true);
+		limpiarLabelsDeBorde(false);
+		irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
+
+	}
+
+	public void seleccionarJugadorModoEnfrentamiento() {
+
+		if (posicionSeleccionPersonaje >= 0 && posicionSeleccionPersonaje <= 14) {
+			jugador = jugadores.get(posicionSeleccionPersonaje);
+			iniciarSonido(sonido, "seleccion");
+			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ1Seleccionado(),
+					vista.getLblTitulo1PjSeleccionarPersonaje());
+			vista.getBtnSeleccionarJugador().setEnabled(false);
+			jugadorSeleccionado = true;
+			cargarEscuchadoresModoEnfrentamiento();
+			if (computadoraSeleccionada) {
+				prepararBotonJugar();
+				exclamaciones();
+			}
+		} else if (posicionSeleccionPersonaje == -1) {
+			vista.getLblAvisosSeleccionarJugador().setText("Debe seleccionar un personaje para el jugador");
+		}
+	}
+
+	public void seleccionarComputadoraModoEnfrentamiento() {
+
+		computadora = computadoras.get(posicionSeleccionPersonaje);
+		iniciarSonido(sonido, "seleccion");
+		mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),
+				vista.getLblTitulo2PjSeleccionarPersonaje());
+		computadoraSeleccionada = true;
+		if (jugadorSeleccionado) {
+			prepararBotonJugar();
+			exclamaciones();
+		}
+
+		vista.getLblAvisosSeleccionarJugador().setText("Debe seleccionar personaje para computadora");
 
 	}
 
@@ -177,32 +280,42 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void tacharPersonajeElimiando() {
 
-		ArrayList<JLabel> labelsSeleccion = vista.getSeleccionPersonaje();
-		ArrayList<JLabel> sobrePuestos = vista.getSobrePuesoParaElimianr();
+		ArrayList<JLabel> labelsDesactivar = vista.getSeleccionComputadora();
+		ArrayList<JLabel> labels = vista.getSobrepuestosComputadora();
 
-		labelsSeleccion.get(posicionSeleccionPersonaje).setEnabled(false);
-		labelsSeleccion.get(posicionSeleccionPersonaje).setBorder(null);
+		labelsDesactivar.get(posicionSeleccionPersonaje).setEnabled(false);
+		labelsDesactivar.get(posicionSeleccionPersonaje).setBorder(null);
+		vista.ponerImagenAJlabel(labels.get(posicionSeleccionPersonaje), "eliminado.png", true);
+		labels.get(posicionSeleccionPersonaje).repaint();
+		labels.get(posicionSeleccionPersonaje).revalidate();
+	}
 
-		vista.ponerImagenAJlabel(sobrePuestos.get(posicionSeleccionPersonaje), "eliminado.png", false);
+	public void refrescarBotonesSeleccionar() {
 
-		vista.getBtnSeleccionarPersonaje().setEnabled(true);
+		vista.getBtnSeleccionarComputadora().setEnabled(true);
 		vista.getBtnJugar().setEnabled(false);
 		vista.getBtnJugar().setBackground(Color.gray);
-		vista.getBtnSeleccionarPersonaje().setBackground(Color.yellow);
-		irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
+		vista.getBtnSeleccionarComputadora().setBackground(Color.yellow);
+		vista.getBtnVolverDesdeJugar().setText("Volver");
 
 	}
 
 	private void modoHistoria() {
 
-		iniciarSeleccionJugadores();
-
-		personajesEliminadosPosicion.clear();
+		detenerMuscia();
+		iniciarSonido(sonido, "seleccion");
 		modoHistoria = true;
 		combateGanado = false;
+		personajesEliminadosPosicion.clear();
 		posicionSeleccionPersonaje = -1;
-		combatesGanadosEnHistoriaDeSeguido = 0;
-		cargarEscuhcadoresSeleccionPersonajesMouseListener();
+		combatesGanadosEnHistoriaDeSeguido = 3;
+		vista.caragarPanelSeleccionDePersonajes();
+		iniciarSeleccionJugadores();
+		cargarEscuhcadoresSeleccionPersonajesMouseListenerModoHistoria();
+		if (!escuchadoresPanelSeleccionPersonaje) {
+			listenerPanelSeleccionerPersonajes();
+			escuchadoresPanelSeleccionPersonaje = true;
+		}
 
 	}
 
@@ -210,7 +323,8 @@ public class Controlador implements ActionListener, MouseListener {
 
 		if (combateGanado && modoHistoria) {
 
-			vista.getBtnSeleccionarPersonaje().setEnabled(true);
+			vista.getBtnSeleccionarJugador().setEnabled(false);
+			vista.getBtnSeleccionarComputadora().setEnabled(true);
 			vista.getBtnJugar().setEnabled(false);
 		}
 
@@ -218,14 +332,11 @@ public class Controlador implements ActionListener, MouseListener {
 		resetearVidaLuchador(computadora);
 		reestablecerMarcadores();
 		combate = new Combate();
-		detenerMuscia();
-		detenerSonido(sonido);
 		iniciarSonido(sonido, "seleccion");
 		iniciarSonido(sonido, "jugadores_seleccionados");
 		irAlSiguientePanel(vista.getPanelSeleccionPersonajes(), vista.getPanelJuego(), 3);
 		pantallaJugar();
 
-		computadora.setCombate(combate);
 		jugador.setCombate(combate);
 		combate.setJugador(jugador);
 		combate.setComputadora(computadora);
@@ -234,32 +345,24 @@ public class Controlador implements ActionListener, MouseListener {
 		combate.start();
 	}
 
-	private void seleccionarPersonajesModoHistoria() {
+	private void seleccionarComputadoraModoHistoria() {
 
-		if (!pJ1Seleccionado && pJ1 != -1) {
-
-			jugador = new Luchador();
-			jugador = luchadores.get(pJ1);
-			vista.getLblAvisosSeleccionarJugador().setText("Ahora pulse de nuevo 'SELECCIONAR'");
-			pJ1Seleccionado = true;
-			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ1Seleccionado(),
-					vista.getLblTitulo1PjSeleccionarPersonaje());
-		} else if (pJ1Seleccionado) {
-
+		if (posicionSeleccionPersonaje != -1) {
 			int aleatorio = 0;
 			computadora = new Luchador();
-	
-			if(combatesGanadosEnHistoriaDeSeguido <= 4) {
-				aleatorio = (int) (Math.random() * (luchadores.size()-1));
-				while (aleatorio == pJ1 || personajesEliminadosPosicion.contains(aleatorio)) {
-					aleatorio = (int) (Math.random() * (luchadores.size()-1));
+
+			ArrayList<JLabel> labels = vista.getSeleccionPersonajes();
+
+			if (combatesGanadosEnHistoriaDeSeguido < 4) {
+				aleatorio = (int) (Math.random() * (labels.size() - 1));
+				while (aleatorio == posicionSeleccionPersonaje || personajesEliminadosPosicion.contains(aleatorio)) {
+					aleatorio = (int) (Math.random() * (labels.size() - 1));
 				}
-			}else if(combatesGanadosEnHistoriaDeSeguido == 5) {
-				aleatorio = (int) (Math.random() * (luchadores.size()-1));
-				while (aleatorio == pJ1 || personajesEliminadosPosicion.contains(aleatorio) || !luchadores.get(aleatorio).isBloqueado()) {
-					aleatorio = (int) (Math.random() * (luchadores.size()-1));
-				}
+			} else if (combatesGanadosEnHistoriaDeSeguido == 4) {
+				aleatorio = 14;
 			}
+
+			ponerBordeSeleccionPersonaje(aleatorio, false);
 
 			posicionSeleccionPersonaje = aleatorio;
 
@@ -267,9 +370,8 @@ public class Controlador implements ActionListener, MouseListener {
 					vista.getLblTitulo2PjSeleccionarPersonaje());
 
 			personajesEliminadosPosicion.add(posicionSeleccionPersonaje);
-			computadora = luchadores.get(posicionSeleccionPersonaje);
+			computadora = computadoras.get(posicionSeleccionPersonaje);
 
-			ponerBordeSeleccionPersonaje(posicionSeleccionPersonaje);
 			exclamaciones();
 
 			prepararBotonJugar();
@@ -289,32 +391,26 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void iniciarSeleccionJugadores() {
 
-		detenerMuscia();
-		iniciarSonido(sonido, "seleccion");
-
-		if (venirDesdeInicio) {
+		if (volverDesdeInicio) {
 			iniciarSonido(sonido, "seleccion_menu");
-			venirDesdeInicio = false;
+			volverDesdeInicio = false;
 
 		}
-
-		vista.caragarPanelSeleccionDePersonajes();
-
-		vista.getLblTitulo1PjSeleccionarPersonaje().setText("Jugador");
-		vista.getLblTitulo2PjSeleccionarPersonaje().setText("Computadora");
-		limpiarTextosSeleccionJugador();
-		reiniciarVistaJugadores();
-
-		if (vista.getPanelMenu().isEnabled())
+		if (vista.getPanelMenu().isEnabled()) {
+			vista.caragarPanelSeleccionDePersonajes();
 			irAlSiguientePanel(vista.getPanelMenu(), vista.getPanelSeleccionPersonajes(), 3);
-		else
+			reiniciarVistaJugadores();
+		} else {
+			vista.caragarPanelSeleccionDePersonajes();
 			irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 0);
+			reiniciarVistaJugadores();
+
+		}
 
 	}
 
 	@Override
 	public void mouseClicked(java.awt.event.MouseEvent e) {
-		// TODO Auto-generated method stub
 
 		if (e.getSource() instanceof JLabel) {
 
@@ -322,20 +418,12 @@ public class Controlador implements ActionListener, MouseListener {
 
 			posicionSeleccionPersonaje = Integer.parseInt(label.getName());
 
-			if (!luchadores.get(posicionSeleccionPersonaje).isBloqueado() || modoEnfrentamiento) {
-
-				if (!pJ1Seleccionado) {
-
-					ponerBordeSeleccionPersonaje(posicionSeleccionPersonaje);
-					recogerPosicionYMostrarDatosPersonaje(label);
-					pJ1 = posicionSeleccionPersonaje;
-
-				} else if (!modoHistoria) {
-
-					ponerBordeSeleccionPersonaje(posicionSeleccionPersonaje);
-					recogerPosicionYMostrarDatosPersonaje(label);
-
-				}
+			if (!jugadorSeleccionado) {
+				ponerBordeSeleccionPersonaje(posicionSeleccionPersonaje, true);
+				recogerPosicionYMostrarDatosPersonaje(label);
+			} else if (!modoHistoria) {
+				ponerBordeSeleccionPersonaje(posicionSeleccionPersonaje, false);
+				recogerPosicionYMostrarDatosPersonaje(label);
 			}
 		}
 	}
@@ -364,21 +452,46 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-	private void ponerBordeSeleccionPersonaje(int posicionPersonaje) {
+	public void limpiarLabelsDeBorde(boolean jugador) {// o computadora
+
+		ArrayList<JLabel> labels = null;
+
+		if (jugador) {
+
+			labels = vista.getSeleccionPersonajes();
+		} else {
+			labels = vista.getSeleccionComputadora();
+		}
+
+		for (JLabel jLabel : labels) {
+			jLabel.setBorder(null);
+		}
+
+	}
+
+	private void ponerBordeSeleccionPersonaje(int posicionPersonaje, boolean jugador) {
 
 		Border borde = null;
-		ArrayList<JLabel> labels = vista.getSeleccionPersonaje();
+
+		ArrayList<JLabel> labels = null;
+
+		if (jugador)
+			labels = vista.getSeleccionPersonajes();
+		else
+			labels = vista.getSeleccionComputadora();
 
 		for (JLabel jLabel : labels) {
 			if (jLabel.getName().equals(posicionPersonaje + "")) {
-				iniciarSonido(sonido, "cambio_personaje_seleccion");
+				if (posicionPersonaje != 0)
+					iniciarSonido(sonido, "cambio_personaje_seleccion");
+
 				borde = new LineBorder(Color.yellow, 5);
 				jLabel.setBorder(borde);
 			} else {
 				jLabel.setBorder(null);
 			}
-
 		}
+
 	}
 
 	private void recogerPosicionYMostrarDatosPersonaje(JLabel label) {
@@ -422,7 +535,6 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void mostrarInformacionPersonaje() {
 
-		iniciarSonido(sonido, "seleccion");
 		int posicionPersonaje = vista.getComboBoxNombresLuchadores().getSelectedIndex();
 		mostrarJugadorHistoria(posicionPersonaje - 1);
 
@@ -438,8 +550,16 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void modoEnfrentamiento() {
 
+		detenerMuscia();
+		iniciarSonido(sonido, "seleccion");
+		modoEnfrentamiento = true;
 		iniciarSeleccionJugadores();
-		cargarEscuhcadoresSeleccionPersonajesMouseListener();
+		cargarEscuchadoresModoEnfrentamiento();
+
+		if (!escuchadoresPanelSeleccionPersonaje) {
+			listenerPanelSeleccionerPersonajes();
+			escuchadoresPanelSeleccionPersonaje = true;
+		}
 
 	}
 
@@ -459,6 +579,7 @@ public class Controlador implements ActionListener, MouseListener {
 					vista.getLblMensajePj1(), jugador);
 			combateGanado = false;
 			combatesGanadosEnHistoriaDeSeguido = 0;
+			ponerBordeSeleccionPersonaje(0, true);
 		}
 	}
 
@@ -504,22 +625,25 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void mostrarJugadorSonidoVozSeleccionado(int posicion, JLabel lblImagen, JLabel lblTitulo) {
 
-		if (posicion != -1) {
-			Luchador personajeSeleccionado = luchadores.get(posicion);
-			String nombreImagenes[] = personajeSeleccionado.getImgPelea();
-			vozPersonajeSeleccionado(personajeSeleccionado.getVocesPersonaje());
-			lblTitulo.setText(personajeSeleccionado.getNombre());
-			vista.ponerImagenAJlabel(lblImagen, nombreImagenes[0], false);
+		if (posicion > 15)
+			posicion -= 15;
 
-		}
+		Luchador personajeSeleccionado = jugadores.get(posicion);
+		String nombreImagenes[] = personajeSeleccionado.getImgPelea();
+		vozPersonajeSeleccionado(personajeSeleccionado.getVocesPersonaje());
+		lblTitulo.setText(personajeSeleccionado.getNombre());
+		vista.ponerImagenAJlabel(lblImagen, nombreImagenes[0], false);
+
 	}
 
 	private void prepararBotonJugar() {
 
 		vista.getBtnJugar().setEnabled(true);
 		vista.getBtnJugar().setBackground(Color.YELLOW);
-		vista.getBtnSeleccionarPersonaje().setBackground(Color.gray);
-		vista.getBtnSeleccionarPersonaje().setEnabled(false);
+		vista.getBtnSeleccionarJugador().setBackground(Color.gray);
+		vista.getBtnSeleccionarJugador().setEnabled(false);
+		vista.getBtnSeleccionarComputadora().setBackground(Color.gray);
+		vista.getBtnSeleccionarComputadora().setEnabled(false);
 
 	}
 
@@ -532,25 +656,35 @@ public class Controlador implements ActionListener, MouseListener {
 		iniciarMusica("musica_historia");
 
 		// CONFIGURACIONES DE LUCHADORES
-		cargarJComboboxCooNombresLuchadores(jComboLuchadores, luchadores);
+		cargarJComboboxCooNombresLuchadores(jComboLuchadores, jugadores);
 		vista.getComboBoxNombresLuchadores().setModel(jComboLuchadores);
 
 	}
 
 	private void volverAIncioDesdeSeleccionPersonaje() {
 
-		venirDesdeInicio = true;
-		iniciarSonido(sonido, "seleccion");
+		volverDesdeInicio = true;
 		detenerMuscia();
 		irAlSiguientePanel(vista.getPanelSeleccionPersonajes(), vista.getPanelMenu(), 1);
 		iniciarMusica("musica_inicio");
 		posicionSeleccionPersonaje = -1;
-		pJ1 = -1;
-		pJ1Seleccionado = false;
+
 		if (modoHistoria)
 			modoHistoria = false;
+
 		if (modoEnfrentamiento)
 			modoEnfrentamiento = false;
+
+		if (jugadorSeleccionado)
+			jugadorSeleccionado = false;
+
+		if (computadoraSeleccionada)
+			computadoraSeleccionada = false;
+
+		if (escuchadoresPanelSeleccionPersonaje)
+			escuchadoresPanelSeleccionPersonaje = false;
+
+		ponerBordeSeleccionPersonaje(0, true);
 
 	}
 
@@ -650,6 +784,25 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	private void mostrarPersonajeADesbloquear() {
+
+		Luchador desbloqueado = jugadores.get(posicionSeleccionPersonaje);
+
+		iniciarSonido(sonido, "nuevo_personaje_desbloqueado");
+
+		vista.getLblNombreDesbloqueo().setText(desbloqueado.getNombre());
+		vista.getLblEdadDesbloqueoPersonaje().setText(desbloqueado.getEdad() + "");
+		vista.getLblEstaturaDesbloqueoPersonaje().setText(desbloqueado.getEstatura() + "");
+		vista.getLblPesoDesbloqueoPersonaje().setText(desbloqueado.getPeso() + "");
+		vista.getLblFisicoDesbloqueoPersonaje().setText(desbloqueado.getFisico() + "");
+		vista.getLabelVelocidadDesbloqueoPersonaje().setText(desbloqueado.getVelocidad() + "");
+		vista.getLblPtenciaDesbloquearPersonaje().setText(desbloqueado.getPotencia() + "");
+		vista.getTextPaneDescripcionDesbloqueo().setText(desbloqueado.getDescripcion());
+		vista.ponerImagenAJlabel(vista.getLblImgJugadorDesbloqueado(), imagenAleatoria(desbloqueado.getImgPelea()),
+				false);
+
+	}
+
 	public void actualizarVistaCombate() {
 
 		if (jugador != null) {
@@ -667,39 +820,35 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
-	private void cargarEscuhcadoresSeleccionPersonajesMouseListener() {
+	private void cargarEscuhcadoresSeleccionPersonajesMouseListenerModoHistoria() {
 
-		ArrayList<JLabel> labels = vista.getSobrePuesoParaElimianr();
+		ArrayList<JLabel> labels = vista.getSeleccionPersonajes();
+		ArrayList<Integer> posicionesDesbloqueadas = vista.getPosicionesDesbloqueadas();
 
-		for (int i = 0; i < labels.size(); i++) {
-			labels.get(i).addMouseListener(this);
+		if (modoHistoria) {
+			for (int i = 0; i < labels.size(); i++) {
+				if (posicionesDesbloqueadas.contains(i))
+					labels.get(i).addMouseListener(this);
+			}
+		} else {
+
+			for (int i = 0; i < labels.size(); i++) {
+				labels.get(i).addMouseListener(this);
+			}
 		}
-
-		vista.getBtnJugar().addActionListener(this);
-		vista.getBtnVolverDesdeSeleccionarPersonaje().addActionListener(this);
-		vista.getBtnSeleccionarPersonaje().addActionListener(this);
 	}
 
-	private void seleccionarPersonajesModoEnfrentamiento() {
+	private void cargarEscuchadoresModoEnfrentamiento() {
 
-		if (posicionSeleccionPersonaje != -1 && !pJ1Seleccionado) {
-			jugador = new Luchador();
-			jugador = luchadores.get(posicionSeleccionPersonaje);
-			vista.getLblAvisosSeleccionarJugador().setText("Ahora seleccione personaje para la computadora");
-			pJ1Seleccionado = true;
-			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ1Seleccionado(),
-					vista.getLblTitulo1PjSeleccionarPersonaje());
+		ArrayList<JLabel> labels = null;
 
-		} else if (posicionSeleccionPersonaje != -1) {
-			computadora = new Luchador();
-			computadora = luchadores.get(posicionSeleccionPersonaje);
-			vista.getLblAvisosSeleccionarJugador().setText("Ahora clic en jugar para jugar");
-			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),
-					vista.getLblTitulo2PjSeleccionarPersonaje());
-			prepararBotonJugar();
-		} else {
-			vista.getLblAvisosSeleccionarJugador().setForeground(Color.RED);
-			vista.getLblAvisosSeleccionarJugador().setText("¡¡DEBE SELECCIONAR UN PERSONAJE para el jugador!!");
+		if (!jugadorSeleccionado)
+			labels = vista.getSeleccionPersonajes();
+		else
+			labels = vista.getSeleccionComputadora();
+
+		for (JLabel label : labels) {
+			label.addMouseListener(this);
 		}
 	}
 
@@ -758,14 +907,16 @@ public class Controlador implements ActionListener, MouseListener {
 			vista.getLblImgJ1Seleccionado().setIcon(null);
 			vista.getBtnJugar().setEnabled(false);
 			vista.getBtnJugar().setBackground(Color.gray);
+			vista.getBtnSeleccionarJugador().setEnabled(true);
+			vista.getBtnSeleccionarJugador().setBackground(Color.yellow);
+			vista.getBtnSeleccionarJugador().setEnabled(true);
 		}
 		vista.getLblImgJ2Seleccionado().setIcon(null);
-		vista.getBtnSeleccionarPersonaje().setEnabled(true);
-		vista.getBtnSeleccionarPersonaje().setBackground(Color.yellow);
-		vista.getBtnSeleccionarPersonaje().setEnabled(true);
+		vista.getBtnSeleccionarComputadora().setEnabled(true);
+		vista.getBtnSeleccionarComputadora().setBackground(Color.yellow);
+		vista.getBtnSeleccionarComputadora().setEnabled(true);
 
-		if (!combateGanado)
-			pJ1Seleccionado = false;
+		limpiarTextosSeleccionJugador();
 
 		combate = new Combate();
 
@@ -773,10 +924,10 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void ponerDatosJugadorSeleccionadoEnJLabels(int posicion) {
 
-		vista.getLblNombreSeleccionPersonaje().setText(luchadores.get(posicion).getNombre());
-		vista.getLblPotenciaSeleccionarPersonaje().setText(luchadores.get(posicion).getPotencia() + "");
-		vista.getLblFisicoSeleccionarPersonaje().setText(luchadores.get(posicion).getFisico() + "");
-		vista.getLblVelocidadSeleccionarPersonaje().setText(luchadores.get(posicion).getVelocidad() + "");
+		vista.getLblNombreSeleccionPersonaje().setText(jugadores.get(posicion).getNombre());
+		vista.getLblPotenciaSeleccionarPersonaje().setText(jugadores.get(posicion).getPotencia() + "");
+		vista.getLblFisicoSeleccionarPersonaje().setText(jugadores.get(posicion).getFisico() + "");
+		vista.getLblVelocidadSeleccionarPersonaje().setText(jugadores.get(posicion).getVelocidad() + "");
 
 	}
 
@@ -804,6 +955,8 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void limpiarTextosSeleccionJugador() {
 
+		vista.getLblTitulo1PjSeleccionarPersonaje().setText("Jugador");
+		vista.getLblTitulo2PjSeleccionarPersonaje().setText("Computadora");
 		vista.getLblFisicoSeleccionarPersonaje().setText("?");
 		vista.getLblNombreSeleccionPersonaje().setText("?");
 		vista.getLblPotenciaSeleccionarPersonaje().setText("?");
@@ -838,17 +991,17 @@ public class Controlador implements ActionListener, MouseListener {
 	public void mostrarJugadorHistoria(int posicion) {
 
 		if (posicion > -1) {
-			String nombresImagenes[] = luchadores.get(posicion).getImgPelea();
+			String nombresImagenes[] = jugadores.get(posicion).getImgPelea();
 			vista.getLblAvisosHistoria().setText("");
-			vista.getLblNombreHIstoria().setText(luchadores.get(posicion).getNombre());
-			vista.getLblEstatura().setText(luchadores.get(posicion).getEstatura() + " m");
-			vista.getTextAreaDescripcionHistoria().setText(luchadores.get(posicion).getDescripcion());
-			vista.getLblPesoHistoria().setText(luchadores.get(posicion).getPeso() + " kg");
-			vista.getLblEdadHIstoria().setText(luchadores.get(posicion).getEdad() + "");
+			vista.getLblNombreHIstoria().setText(jugadores.get(posicion).getNombre());
+			vista.getLblEstatura().setText(jugadores.get(posicion).getEstatura() + " m");
+			vista.getTextAreaDescripcionHistoria().setText(jugadores.get(posicion).getDescripcion());
+			vista.getLblPesoHistoria().setText(jugadores.get(posicion).getPeso() + " kg");
+			vista.getLblEdadHIstoria().setText(jugadores.get(posicion).getEdad() + "");
 			vista.ponerImagenAJlabel(vista.getLblPersonajeHistoriaImagen(), nombresImagenes[0], false);
-			vista.getLblFisico().setText(luchadores.get(posicion).getFisico() + "");
-			vista.getLblPotencia().setText(luchadores.get(posicion).getPotencia() + "");
-			vista.getLblVelocidad().setText(luchadores.get(posicion).getVelocidad() + "");
+			vista.getLblFisico().setText(jugadores.get(posicion).getFisico() + "");
+			vista.getLblPotencia().setText(jugadores.get(posicion).getPotencia() + "");
+			vista.getLblVelocidad().setText(jugadores.get(posicion).getVelocidad() + "");
 		} else {
 			limparCamposHistoria();
 			vista.getLblAvisosHistoria().setText("DEBE SELECCIONAR UN PERSONAJE");
@@ -870,6 +1023,16 @@ public class Controlador implements ActionListener, MouseListener {
 		vista.getBtnVolverDesdeJugar().addActionListener(this);
 		vista.getBtnContinuarDesbloquePersonaje().addActionListener(this);
 		vista.getBtnVolverDeInfo().addActionListener(this);
+		vista.getBtnVovlerDesdeGanador().addActionListener(this);
+
+	}
+
+	private void listenerPanelSeleccionerPersonajes() {
+
+		vista.getBtnJugar().addActionListener(this);
+		vista.getBtnVolverDesdeSeleccionarPersonaje().addActionListener(this);
+		vista.getBtnSeleccionarJugador().addActionListener(this);
+		vista.getBtnSeleccionarComputadora().addActionListener(this);
 
 	}
 

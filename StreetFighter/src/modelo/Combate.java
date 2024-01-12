@@ -9,7 +9,7 @@ public class Combate extends Thread {
 	
 	private boolean turnoComputadora = false, combateInterrumpido = false,terminado = false;
 	private Musica sonido;
-	private int cuenta = 11,contadorRespuestaSiNoAtaque = 0;
+	private int cuenta = 5,contadorRespuestaSiNoAtaque = 0;
 	private JLabel vistaContador;
 	private Luchador jugador,computadora;
 	private Controlador controlador;	

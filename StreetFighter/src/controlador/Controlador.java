@@ -23,7 +23,8 @@ public class Controlador implements ActionListener, MouseListener {
 	public static int personajesDesbloqueados = 0;
 	public static boolean modoHistoria = false;
 	private boolean combateGanado = false, modoEnfrentamiento = false, volverDesdeInicio = true,
-			jugadorSeleccionado = false, computadoraSeleccionada = false, escuchadoresPanelSeleccionPersonaje = false;
+			jugadorSeleccionado = false, computadoraSeleccionada = false, escuchadoresPanelSeleccionPersonaje = false,
+			finalizado = false;
 	private Combate combate;
 	private Vista vista;
 	private Musica musica, sonido;
@@ -82,6 +83,8 @@ public class Controlador implements ActionListener, MouseListener {
 		} else if (e.getSource() == vista.getBtnSeleccionarJugador()) {
 
 			seleccionarJugadorModoEnfrentamiento();
+			if(modoEnfrentamiento)
+				posicionSeleccionPersonaje = -1;
 
 		} else if (e.getSource() == vista.getBtnSeleccionarComputadora()) {
 
@@ -89,6 +92,8 @@ public class Controlador implements ActionListener, MouseListener {
 				seleccionarComputadoraModoEnfrentamiento();
 			else if (modoHistoria)
 				seleccionarComputadoraModoHistoria();
+			
+			posicionSeleccionPersonaje = -1;
 
 		} else if (e.getSource() == vista.getBtnJugar()) {
 
@@ -102,16 +107,18 @@ public class Controlador implements ActionListener, MouseListener {
 
 			} else if (!combateGanado && modoHistoria) {
 
-				reiniciarModoHistoria();
+				reiniciarModoHistoria(false);
 
 			} else if (combatesGanadosEnHistoriaDeSeguido <= 4 && modoHistoria) {
 
 				mostrarPanelQueCorresponda(false);
-
+				refrescarBotonesSeleccionar();
+				
 			} else if (combatesGanadosEnHistoriaDeSeguido == 5 && modoHistoria) {
 
 				mostrarPanelQueCorresponda(true);
-
+				reiniciarModoHistoria(true);
+				
 			} else if (modoHistoria && !combateGanado) {
 				
 				modoHistoria();
@@ -129,9 +136,7 @@ public class Controlador implements ActionListener, MouseListener {
 			iniciarSonido(sonido, "seleccion");
 			
 			
-			
 			ArrayList<Integer> posicionesDesbloqueadas = vista.getPosicionesDesbloqueadas();
-			
 			if (!posicionesDesbloqueadas.contains(posicionSeleccionPersonaje)) {
 				desbloquearPersonajeVencido();
 				mostrarPersonajeADesbloquear();
@@ -140,8 +145,6 @@ public class Controlador implements ActionListener, MouseListener {
 			}else {
 				irAlSiguientePanel(vista.getPanelGanador(), vista.getPanelSeleccionPersonajes(), 1);
 			}
-			
-			irAlSiguientePanel(vista.getPanelGanador(), vista.getPanelSeleccionPersonajes(), 1);
 
 		} else if (e.getSource() == vista.getBtnAtacar()) {
 
@@ -165,14 +168,15 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void mostrarPanelQueCorresponda(boolean ganador) {
 
-		refrescarBotonesSeleccionar();
 		tacharPersonajeElimiando();
 
 		ArrayList<Integer> posicionesDesbloqueadas = vista.getPosicionesDesbloqueadas();
 		if (!posicionesDesbloqueadas.contains(posicionSeleccionPersonaje)) {
 			if (ganador) {
 				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelGanador(), 1);
-				mostrarDatosGanador();
+				refrescarBotonesSeleccionar();
+				vista.getBtnSeleccionarJugador().setEnabled(true);
+				vista.getBtnSeleccionarJugador().setBackground(Color.YELLOW);
 			} else {
 				desbloquearPersonajeVencido();
 				mostrarPersonajeADesbloquear();
@@ -183,6 +187,8 @@ public class Controlador implements ActionListener, MouseListener {
 			if (ganador) {
 				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelGanador(), 1);
 				mostrarDatosGanador();
+				vista.getBtnSeleccionarJugador().setEnabled(true);
+				vista.getBtnSeleccionarJugador().setBackground(Color.YELLOW);
 			} else
 				irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
 		}
@@ -222,7 +228,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-	public void reiniciarModoHistoria() {
+	public void reiniciarModoHistoria(boolean finalizado) {
 
 		combate.setCombateInterrumpido(true);
 		jugador = null;
@@ -234,8 +240,10 @@ public class Controlador implements ActionListener, MouseListener {
 		reiniciarVistaJugadores();
 		limpiarLabelsDeBorde(true);
 		limpiarLabelsDeBorde(false);
-		irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
-
+		combatesGanadosEnHistoriaDeSeguido = 0;
+		if(!finalizado)
+			irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
+		
 	}
 
 	public void seleccionarJugadorModoEnfrentamiento() {
@@ -259,17 +267,21 @@ public class Controlador implements ActionListener, MouseListener {
 
 	public void seleccionarComputadoraModoEnfrentamiento() {
 
-		computadora = computadoras.get(posicionSeleccionPersonaje);
 		iniciarSonido(sonido, "seleccion");
-		mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),
-				vista.getLblTitulo2PjSeleccionarPersonaje());
-		computadoraSeleccionada = true;
-		if (jugadorSeleccionado) {
-			prepararBotonJugar();
-			exclamaciones();
-		}
+		
+		if(posicionSeleccionPersonaje != -1) {	
+			computadora = computadoras.get(posicionSeleccionPersonaje);
+			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),
+					vista.getLblTitulo2PjSeleccionarPersonaje());
+			computadoraSeleccionada = true;
+			if (jugadorSeleccionado) {
+				prepararBotonJugar();
+				exclamaciones();
+			}
 
-		vista.getLblAvisosSeleccionarJugador().setText("Debe seleccionar personaje para computadora");
+		}else {			
+			vista.getLblAvisosSeleccionarJugador().setText("Debe seleccionar personaje para computadora");
+		}
 
 	}
 
@@ -307,7 +319,9 @@ public class Controlador implements ActionListener, MouseListener {
 		modoHistoria = true;
 		combateGanado = false;
 		personajesEliminadosPosicion.clear();
+		System.out.println(finalizado);
 		posicionSeleccionPersonaje = -1;
+		
 		combatesGanadosEnHistoriaDeSeguido = 3;
 		vista.caragarPanelSeleccionDePersonajes();
 		iniciarSeleccionJugadores();
@@ -316,7 +330,7 @@ public class Controlador implements ActionListener, MouseListener {
 			listenerPanelSeleccionerPersonajes();
 			escuchadoresPanelSeleccionPersonaje = true;
 		}
-
+		finalizado = false;
 	}
 
 	private void configuracionParaJugarPartida() {

@@ -133,7 +133,7 @@ public class Vista extends JFrame {
 		panelGanador.add(btnVovlerDesdeGanador);
 		
 		JLabel lblImgWIN = new JLabel("");
-		lblImgWIN.setBounds(308, 18, 390, 100);
+		lblImgWIN.setBounds(514, 21, 299, 231);
 		panelGanador.add(lblImgWIN);
 		
 		lblFondoGanador = new JLabel("");
@@ -686,6 +686,9 @@ public class Vista extends JFrame {
 		ponerImagenAJlabel(lblFondoDesbloqueoPersonaje, "fondo_desbloqueo_personaje.jpg", true);
 		ponerImagenAJlabel(lblCandado, "candado.png", false);
 		ponerImagenAJlabel(lblMensajeDesbloqueado, "new.png", false);
+		ponerImagenAJlabel(lblFondoGanador, "fondo_ganador.jpg", false);
+		ponerImagenAJlabel(lblLogoStreetFighter, "logo_street_fighter.png", false);
+		ponerImagenAJlabel(lblImgWIN, "winner.png", false);
 	}
 
 	// METODO PARA INSERTAR IMAGENES EN LOS JLABEL

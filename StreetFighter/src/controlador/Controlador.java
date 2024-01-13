@@ -192,7 +192,7 @@ public class Controlador implements ActionListener, MouseListener {
 	private void mostrarDatosGanador() {
 
 		String imgs[] = jugador.getImgPelea();
-		vista.ponerImagenAJlabel(vista.getLblimgGanador(), imgs[0], combateGanado);
+		vista.ponerImagenAJlabel(vista.getLblimgGanador(), imgs[0], false);
 
 	}
 

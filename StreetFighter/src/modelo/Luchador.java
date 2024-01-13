@@ -1,7 +1,7 @@
 package modelo;
 
 import controlador.Controlador;
-import vista.Vista;
+
 
 public class Luchador implements Comparable<Luchador>{
 	

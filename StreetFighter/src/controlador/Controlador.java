@@ -17,14 +17,28 @@ import modelo.Luchador;
 import modelo.Musica;
 import vista.Vista;
 
+/**
+ * 
+ * Clase que gestiona las acciones entre la vista y el modelo
+ * Maneja los eventos de botones, acciones del usuario y lógica de combate
+ * Se responsabiliza de la carga de luchadores, combates, sonidos, música de la aplicación y la
+ * gestión de modo historia y modo enfrentamiento
+ * 
+ * Este controlador sigue el patron de Modelo Vista Controlador (MVC)
+ * 
+ * @author LardevPro
+ * @version 1.0
+ * @since 26/04/2024
+ * 
+ */
+
 public class Controlador implements ActionListener, MouseListener {
 
 	private int combatesGanadosEnHistoriaDeSeguido = 0, posicionSeleccionPersonaje = -1;
 	public static int personajesDesbloqueados = 0;
 	public static boolean modoHistoria = false;
 	private boolean combateGanado = false, modoEnfrentamiento = false, volverDesdeInicio = true,
-			jugadorSeleccionado = false, computadoraSeleccionada = false, escuchadoresPanelSeleccionPersonaje = false,
-			finalizado = false;
+			jugadorSeleccionado = false, computadoraSeleccionada = false, escuchadoresPanelSeleccionPersonaje = false;
 	private Combate combate;
 	private Vista vista;
 	private Musica musica, sonido;
@@ -92,8 +106,6 @@ public class Controlador implements ActionListener, MouseListener {
 				seleccionarComputadoraModoEnfrentamiento();
 			else if (modoHistoria)
 				seleccionarComputadoraModoHistoria();
-			
-			posicionSeleccionPersonaje = -1;
 
 		} else if (e.getSource() == vista.getBtnJugar()) {
 
@@ -222,7 +234,8 @@ public class Controlador implements ActionListener, MouseListener {
 		irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
 		jugadorSeleccionado = false;
 		computadoraSeleccionada = false;
-		posicionSeleccionPersonaje = -1;
+		if(!combateGanado)
+			posicionSeleccionPersonaje = -1;
 		limpiarLabelsDeBorde(true);
 		limpiarLabelsDeBorde(false);
 
@@ -271,8 +284,7 @@ public class Controlador implements ActionListener, MouseListener {
 		
 		if(posicionSeleccionPersonaje != -1) {	
 			computadora = computadoras.get(posicionSeleccionPersonaje);
-			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),
-					vista.getLblTitulo2PjSeleccionarPersonaje());
+			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),vista.getLblTitulo2PjSeleccionarPersonaje());
 			computadoraSeleccionada = true;
 			if (jugadorSeleccionado) {
 				prepararBotonJugar();
@@ -295,6 +307,8 @@ public class Controlador implements ActionListener, MouseListener {
 		ArrayList<JLabel> labelsDesactivar = vista.getSeleccionComputadora();
 		ArrayList<JLabel> labels = vista.getSobrepuestosComputadora();
 
+		System.out.println(posicionSeleccionPersonaje);
+		
 		labelsDesactivar.get(posicionSeleccionPersonaje).setEnabled(false);
 		labelsDesactivar.get(posicionSeleccionPersonaje).setBorder(null);
 		vista.ponerImagenAJlabel(labels.get(posicionSeleccionPersonaje), "eliminado.png", true);
@@ -319,7 +333,6 @@ public class Controlador implements ActionListener, MouseListener {
 		modoHistoria = true;
 		combateGanado = false;
 		personajesEliminadosPosicion.clear();
-		System.out.println(finalizado);
 		posicionSeleccionPersonaje = -1;
 		
 		combatesGanadosEnHistoriaDeSeguido = 3;
@@ -330,7 +343,6 @@ public class Controlador implements ActionListener, MouseListener {
 			listenerPanelSeleccionerPersonajes();
 			escuchadoresPanelSeleccionPersonaje = true;
 		}
-		finalizado = false;
 	}
 
 	private void configuracionParaJugarPartida() {
@@ -357,14 +369,19 @@ public class Controlador implements ActionListener, MouseListener {
 		combate.setVistaContador(vista.getLblTiempo());
 		combate.setControlador(this);
 		combate.start();
+		
 	}
 
+	/**
+	 * Selección del personaje de la computadora en el modo historia.
+	 * La computadora elige un personaje aleatorio para enfrentarse al jugador.
+	 */
 	private void seleccionarComputadoraModoHistoria() {
 
 		if (posicionSeleccionPersonaje != -1) {
 			int aleatorio = 0;
 			computadora = new Luchador();
-
+			
 			ArrayList<JLabel> labels = vista.getSeleccionPersonajes();
 
 			if (combatesGanadosEnHistoriaDeSeguido < 4) {
@@ -378,6 +395,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 			ponerBordeSeleccionPersonaje(aleatorio, false);
 
+			System.out.println(posicionSeleccionPersonaje);
 			posicionSeleccionPersonaje = aleatorio;
 
 			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),
@@ -430,7 +448,8 @@ public class Controlador implements ActionListener, MouseListener {
 
 			JLabel label = (JLabel) e.getSource();
 
-			posicionSeleccionPersonaje = Integer.parseInt(label.getName());
+			if(posicionSeleccionPersonaje == -1)
+				posicionSeleccionPersonaje = Integer.parseInt(label.getName());
 
 			if (!jugadorSeleccionado) {
 				ponerBordeSeleccionPersonaje(posicionSeleccionPersonaje, true);
@@ -702,6 +721,10 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+
+	/**
+	 * Método que se encarga de gestionar y preparar la pantalla principal si se desea volver desde el modo leyenda
+	 */
 	private void volverDesdeLeyenda() {
 		detenerMuscia();
 		detenerSonido(sonido);
@@ -711,29 +734,50 @@ public class Controlador implements ActionListener, MouseListener {
 		limparCamposHistoria();
 	}
 
+	/**
+	 * Método que se encarga de recoger los nombres de los luchadores en el panel leyenda
+	 * y cargarlos en un JComboBox,este componente interactua con el usuario dándole la opción 
+	 * de seleccionar el que quiere que se muestre
+	 * 
+	 * @param modelo tipo JComboBox para cargar todos los nombres de los luchadores
+	 * @param luchadores recibe la lista de luchadores que se cargan en el modelo
+	 */
 	public void cargarJComboboxCooNombresLuchadores(DefaultComboBoxModel<String> modelo,
 			ArrayList<Luchador> luchadores) {
 
 		modelo.addElement("Lista de Personajes");
 		for (Luchador luchador : luchadores) {
 			modelo.addElement(luchador.getNombre());
-			System.out.println("Carga");
 		}
 	}
 
-	// METODO PARA INCIAR MUSCIA
+	/**
+	 * Método que inicia todos los temas musicales referentes al juego
+	 * @param nombreTema que se reproducirá en esa sección 
+	 */
 	public void iniciarMusica(String nombreTema) {
-
 		this.musica = new Musica("src/musica/" + nombreTema + ".wav");
 		musica.reproducir();
 	}
 
-	public static void iniciarSonido(Musica sonido, String nombreTema) {
-
-		sonido = new Musica("src/musica/" + nombreTema + ".wav");
+	/**
+	 * Método que se encargará de recrear los sonidos correspondientes a un momento breve de tiempo 
+	 * en la aplicación
+	 * 
+	 * @param sonido Objeto de la clase Música que recibre para iniciar o reiniciarlo
+	 * @nombre String que se refiere al titulo del sonido
+	 * 
+	 */
+	public static void iniciarSonido(Musica sonido, String nombre) {
+		sonido = new Musica("src/musica/" + nombre + ".wav");
 		sonido.reproducir();
 	}
 
+	/**
+	 * Método que se encarga de detener un sonido para que no haya conflictos entre hilos
+	 * 
+	 * @param sonido objeto de la clase Musica 
+	 */
 	public static void detenerSonido(Musica sonido) {
 		if (sonido != null) {
 			sonido.detener();
@@ -741,7 +785,10 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
-	// METODO PARA PARAR MUSCIA
+	/**
+	 * Método que se encarga de detener la música antes del transito entre secciones impidiendo conflictos y
+	 * liberando recursos
+	 */
 	public void detenerMuscia() {
 		if (this.musica != null) {
 			this.musica.detener();
@@ -749,6 +796,9 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Método que se encarga de preparar el panel de infromación, sus componentes y multimedia
+	 */
 	private void irAPantallaInformacion() {
 		detenerMuscia();
 		iniciarSonido(sonido, "cambio_personaje_seleccion");
@@ -758,6 +808,9 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Método que se encarga de preparar el panel principal, sus componentes y multimedia
+	 */
 	private void volverDesdePantallaInformacion() {
 		detenerMuscia();
 		iniciarSonido(sonido, "cambio_personaje_seleccion");
@@ -767,7 +820,13 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-	// METODO PARA MOSTRAR Y OCULTAR PANELES
+	/**
+	 * Método que gestiona los paneles 
+	 * 
+	 * @param aOcultar objeto tipo JPanle que será ocultado
+	 * @param aMostrar objeto tipo JPanel que se mostrará
+	 * @param pausa tiempo en segundos que habrá de pausa entre cambios de panel
+	 */
 	public void irAlSiguientePanel(JPanel aOcultar, JPanel aMostrar, int pausa) {
 		try {
 			Thread.sleep(pausa * 1000);
@@ -778,11 +837,22 @@ public class Controlador implements ActionListener, MouseListener {
 		aMostrar.setVisible(true);
 	}
 
+	/**
+	 * Método que recibe un array de String siendo estos titulos de las voces correspondientes 
+	 * a luchadores, una vez dentro del método se escogerá un sonido aleatorio cada vez
+	 * 
+	 * @param voces array de String que recoge las voces de los personajes
+	 */
 	private void vozPersonajeSeleccionado(String voces[]) {
 		int aleatorioVoz = (int) (1 + Math.random() * (voces.length - 1));
 		iniciarSonido(sonido, voces[aleatorioVoz]);
 	}
 
+	/**
+	 * Método que se encarga de detener el juego por el tiempo deseado cuando se es llamado
+	 * 
+	 * @param tiempo será los segundos que se detendrá 
+	 */
 	public void detenerJuego(int tiempo) {
 		try {
 			Thread.sleep(tiempo * 1000);
@@ -791,6 +861,9 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	/*
+	 * Método que activa los botones del panelCombate (no se puede iniciar con los demás porque el JPanel es creado después)
+	 */
 	public void activarBotonesPelea() {
 		vista.getBtnAtacar().setEnabled(true);
 		vista.getBtnDefender().setEnabled(true);
@@ -798,6 +871,9 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Método que muestra el jugador desbloqueado en panelPersonajeDesbloqueado (solo en modo historia)
+	 */
 	private void mostrarPersonajeADesbloquear() {
 
 		Luchador desbloqueado = jugadores.get(posicionSeleccionPersonaje);
@@ -817,6 +893,9 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Método que actualiza los marcadores en el panelCombate cada vez que es llamado
+	 */
 	public void actualizarVistaCombate() {
 
 		if (jugador != null) {
@@ -834,6 +913,9 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Método que carga los escuchadores en el panelSeleccionPersonajes (no se carga al principio porque el panel no es estático)
+	 */
 	private void cargarEscuhcadoresSeleccionPersonajesMouseListenerModoHistoria() {
 
 		ArrayList<JLabel> labels = vista.getSeleccionPersonajes();
@@ -852,6 +934,9 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	/*
+	 * Carga los escuchadores correspondientes para que no se puedan seleccionar  personajes que no han sido seleccionados (solo en modo historia)
+	 */
 	private void cargarEscuchadoresModoEnfrentamiento() {
 
 		ArrayList<JLabel> labels = null;
@@ -866,6 +951,10 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	
+	/**
+	 * Método que hace un reset a los componentes del panelCombate cuando se llama
+	 */
 	private void reestablecerMarcadores() {
 
 		vista.getLblVidaPj1().setText(jugador.getVida() + "");
@@ -899,6 +988,13 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * 
+	 * @param jugadorImg
+	 * @param labelTachado
+	 * @param mensajeLucha
+	 * @param pj
+	 */
 	public void eliminarJugadorAnularBontonesActivarContinuar(JLabel jugadorImg, JLabel labelTachado,
 			JLabel mensajeLucha, Luchador pj) {
 		jugadorImg.setEnabled(false);
@@ -967,6 +1063,9 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Método que resetea los valores de los componentes en el panelSeleccionarJugador
+	 */
 	private void limpiarTextosSeleccionJugador() {
 
 		vista.getLblTitulo1PjSeleccionarPersonaje().setText("Jugador");
@@ -978,8 +1077,10 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Metodo que se encarga de poner exclamaciones en los marcadores de la pantalla panelSeleccionarJugador de que pulsa 'ir a combate'
+	 */
 	private void exclamaciones() {
-
 		vista.getLblFisicoSeleccionarPersonaje().setText("¡");
 		vista.getLblNombreSeleccionPersonaje().setText("¡");
 		vista.getLblPotenciaSeleccionarPersonaje().setText("¡");
@@ -987,6 +1088,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	
 	private void limparCamposHistoria() {
 
 		vista.getLblAvisosHistoria().setText("");
@@ -1050,6 +1152,11 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Método que se encarga de cargar la información, imagenes y sonidos de cada uno de los luchadores
+	 * 
+	 * @param luchadores estructura de almacenamiento donde se almacena cada luchador
+	 */
 	public void cargarLuchadores(ArrayList<Luchador> luchadores) {
 
 		String imgPeleaRyu[] = { "ryu_historia.png", "ryu_ataque1.png", "ryu_ataque2.png", "ryu_ataque3.png" };

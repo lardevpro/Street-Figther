@@ -39,8 +39,8 @@ public class Vista extends JFrame {
 			btnVolverAtrasDesdeLeyendas, btnAtacar, btnDefender, btnDescansar, btnVolverDesdeJugar, btnJugar;
 
 	private JComboBox<String> comboBoxNombresHistoria;
-	private JPanel contentPane, panelHistoriaPersonajes, panelMenu, panelSeleccionPersonajes, panelJuego,
-			panelInformacion, panelDesbloqueoPersonaje;
+	private JPanel contentPane, panelHistoriaPersonajes, panelMenu, panelSeleccionPersonajes, panelCombate,
+			panelInformacion, panelPersonajeDesbloqueado;
 
 	private JLabel lblEstatura, lblPesoHistoria, lblEdadHIstoria, lblNombreHIstoria, lblPersonajeHistoriaImagen,
 			lblAvisosHistoria, lblNewLabel_potencia, lblNewLabel_velocidad, lblNewLabel_fisico, lblPotencia,
@@ -142,143 +142,143 @@ public class Vista extends JFrame {
 
 		
 
-		panelDesbloqueoPersonaje = new JPanel();
-		panelDesbloqueoPersonaje.setBounds(0, 0, 847, 613);
-		contentPane.add(panelDesbloqueoPersonaje);
-		panelDesbloqueoPersonaje.setLayout(null);
-		panelDesbloqueoPersonaje.setVisible(false);
+		panelPersonajeDesbloqueado = new JPanel();
+		panelPersonajeDesbloqueado.setBounds(0, 0, 847, 613);
+		contentPane.add(panelPersonajeDesbloqueado);
+		panelPersonajeDesbloqueado.setLayout(null);
+		panelPersonajeDesbloqueado.setVisible(false);
 
 		lblImgJugadorDesbloqueado = new JLabel("");
 		lblImgJugadorDesbloqueado.setBounds(432, 166, 333, 269);
-		panelDesbloqueoPersonaje.add(lblImgJugadorDesbloqueado);
+		panelPersonajeDesbloqueado.add(lblImgJugadorDesbloqueado);
 
 		btnContinuarDesbloquePersonaje = new JButton("Continuar");
 		btnContinuarDesbloquePersonaje.setBackground(new Color(255, 255, 128));
 		btnContinuarDesbloquePersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
 		btnContinuarDesbloquePersonaje.setBounds(10, 539, 127, 42);
-		panelDesbloqueoPersonaje.add(btnContinuarDesbloquePersonaje);
+		panelPersonajeDesbloqueado.add(btnContinuarDesbloquePersonaje);
 
 		JLabel lblNewLabel_4 = new JLabel("Nombre:");
 		lblNewLabel_4.setForeground(new Color(255, 255, 0));
 		lblNewLabel_4.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblNewLabel_4.setBounds(29, 205, 70, 26);
-		panelDesbloqueoPersonaje.add(lblNewLabel_4);
+		panelPersonajeDesbloqueado.add(lblNewLabel_4);
 
 		JLabel lblNewLabel_6 = new JLabel("Edad:");
 		lblNewLabel_6.setForeground(new Color(255, 255, 0));
 		lblNewLabel_6.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblNewLabel_6.setBounds(29, 241, 70, 21);
-		panelDesbloqueoPersonaje.add(lblNewLabel_6);
+		panelPersonajeDesbloqueado.add(lblNewLabel_6);
 
 		JLabel lblNewLabel_7 = new JLabel("Estatura:");
 		lblNewLabel_7.setForeground(new Color(255, 255, 0));
 		lblNewLabel_7.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblNewLabel_7.setBounds(29, 272, 82, 21);
-		panelDesbloqueoPersonaje.add(lblNewLabel_7);
+		panelPersonajeDesbloqueado.add(lblNewLabel_7);
 
 		JLabel lblNewLabel_8 = new JLabel("Peso:");
 		lblNewLabel_8.setForeground(new Color(255, 255, 0));
 		lblNewLabel_8.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblNewLabel_8.setBounds(29, 303, 53, 21);
-		panelDesbloqueoPersonaje.add(lblNewLabel_8);
+		panelPersonajeDesbloqueado.add(lblNewLabel_8);
 
 		JLabel lblNewLabel_9 = new JLabel("Físico:");
 		lblNewLabel_9.setForeground(new Color(255, 255, 0));
 		lblNewLabel_9.setFont(new Font("Baskerville Old Face", Font.BOLD, 15));
 		lblNewLabel_9.setBounds(29, 334, 70, 21);
-		panelDesbloqueoPersonaje.add(lblNewLabel_9);
+		panelPersonajeDesbloqueado.add(lblNewLabel_9);
 
 		JLabel lblNewLabel_10 = new JLabel("Velocidad:");
 		lblNewLabel_10.setForeground(new Color(255, 255, 0));
 		lblNewLabel_10.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblNewLabel_10.setBounds(29, 365, 82, 21);
-		panelDesbloqueoPersonaje.add(lblNewLabel_10);
+		panelPersonajeDesbloqueado.add(lblNewLabel_10);
 
 		lblP = new JLabel("Potencia:");
 		lblP.setForeground(new Color(255, 255, 0));
 		lblP.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblP.setBounds(29, 396, 82, 26);
-		panelDesbloqueoPersonaje.add(lblP);
+		panelPersonajeDesbloqueado.add(lblP);
 
 		lblNombreDesbloqueo = new JLabel("");
 		lblNombreDesbloqueo.setForeground(new Color(255, 255, 255));
 		lblNombreDesbloqueo.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNombreDesbloqueo.setFont(new Font("Bookman Old Style", Font.BOLD, 17));
 		lblNombreDesbloqueo.setBounds(131, 205, 101, 33);
-		panelDesbloqueoPersonaje.add(lblNombreDesbloqueo);
+		panelPersonajeDesbloqueado.add(lblNombreDesbloqueo);
 
 		lblEdadDesbloqueoPersonaje = new JLabel("");
 		lblEdadDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
 		lblEdadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblEdadDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
 		lblEdadDesbloqueoPersonaje.setBounds(131, 229, 101, 33);
-		panelDesbloqueoPersonaje.add(lblEdadDesbloqueoPersonaje);
+		panelPersonajeDesbloqueado.add(lblEdadDesbloqueoPersonaje);
 
 		lblEstaturaDesbloqueoPersonaje = new JLabel("");
 		lblEstaturaDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
 		lblEstaturaDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblEstaturaDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
 		lblEstaturaDesbloqueoPersonaje.setBounds(131, 260, 101, 33);
-		panelDesbloqueoPersonaje.add(lblEstaturaDesbloqueoPersonaje);
+		panelPersonajeDesbloqueado.add(lblEstaturaDesbloqueoPersonaje);
 
 		lblPesoDesbloqueoPersonaje = new JLabel("");
 		lblPesoDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
 		lblPesoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblPesoDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblPesoDesbloqueoPersonaje.setBounds(131, 291, 101, 33);
-		panelDesbloqueoPersonaje.add(lblPesoDesbloqueoPersonaje);
+		panelPersonajeDesbloqueado.add(lblPesoDesbloqueoPersonaje);
 
 		lblFisicoDesbloqueoPersonaje = new JLabel("");
 		lblFisicoDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
 		lblFisicoDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblFisicoDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblFisicoDesbloqueoPersonaje.setBounds(131, 322, 101, 33);
-		panelDesbloqueoPersonaje.add(lblFisicoDesbloqueoPersonaje);
+		panelPersonajeDesbloqueado.add(lblFisicoDesbloqueoPersonaje);
 
 		labelVelocidadDesbloqueoPersonaje = new JLabel("");
 		labelVelocidadDesbloqueoPersonaje.setForeground(new Color(255, 255, 255));
 		labelVelocidadDesbloqueoPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		labelVelocidadDesbloqueoPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
 		labelVelocidadDesbloqueoPersonaje.setBounds(131, 353, 101, 33);
-		panelDesbloqueoPersonaje.add(labelVelocidadDesbloqueoPersonaje);
+		panelPersonajeDesbloqueado.add(labelVelocidadDesbloqueoPersonaje);
 
 		lblTituloDesbloqueoPersonaje = new JLabel("");
 		lblTituloDesbloqueoPersonaje.setBounds(324, 20, 419, 121);
-		panelDesbloqueoPersonaje.add(lblTituloDesbloqueoPersonaje);
+		panelPersonajeDesbloqueado.add(lblTituloDesbloqueoPersonaje);
 
 		lblPtenciaDesbloquearPersonaje = new JLabel("");
 		lblPtenciaDesbloquearPersonaje.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblPtenciaDesbloquearPersonaje.setForeground(new Color(255, 255, 255));
 		lblPtenciaDesbloquearPersonaje.setFont(new Font("Bookman Old Style", Font.BOLD, 16));
 		lblPtenciaDesbloquearPersonaje.setBounds(131, 389, 101, 33);
-		panelDesbloqueoPersonaje.add(lblPtenciaDesbloquearPersonaje);
+		panelPersonajeDesbloqueado.add(lblPtenciaDesbloquearPersonaje);
 
 		lblNewLabel_11 = new JLabel("Descripción:");
 		lblNewLabel_11.setForeground(new Color(255, 255, 0));
 		lblNewLabel_11.setBackground(new Color(255, 255, 255));
 		lblNewLabel_11.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		lblNewLabel_11.setBounds(233, 455, 101, 26);
-		panelDesbloqueoPersonaje.add(lblNewLabel_11);
+		panelPersonajeDesbloqueado.add(lblNewLabel_11);
 
 		textPaneDescripcionDesbloqueo = new JTextPane();
 		textPaneDescripcionDesbloqueo.setForeground(new Color(255, 255, 255));
 		textPaneDescripcionDesbloqueo.setBackground(new Color(64, 0, 64));
 		textPaneDescripcionDesbloqueo.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		textPaneDescripcionDesbloqueo.setBounds(186, 480, 621, 105);
-		panelDesbloqueoPersonaje.add(textPaneDescripcionDesbloqueo);
+		panelPersonajeDesbloqueado.add(textPaneDescripcionDesbloqueo);
 		ponerImagenAJlabel(lblTituloDesbloqueoPersonaje, "logo_street_fighter.png", false);
 
 		lblCandado = new JLabel("");
 		lblCandado.setBounds(242, 136, 115, 95);
-		panelDesbloqueoPersonaje.add(lblCandado);
+		panelPersonajeDesbloqueado.add(lblCandado);
 
 		lblMensajeDesbloqueado = new JLabel("");
 		lblMensajeDesbloqueado.setBounds(-2, 0, 139, 105);
-		panelDesbloqueoPersonaje.add(lblMensajeDesbloqueado);
+		panelPersonajeDesbloqueado.add(lblMensajeDesbloqueado);
 
 		JLabel lblFondoDesbloqueoPersonaje = new JLabel("");
 		lblFondoDesbloqueoPersonaje.setBounds(-2, 0, 837, 596);
-		panelDesbloqueoPersonaje.add(lblFondoDesbloqueoPersonaje);
+		panelPersonajeDesbloqueado.add(lblFondoDesbloqueoPersonaje);
 
 		panelHistoriaPersonajes = new JPanel();
 		panelHistoriaPersonajes.setForeground(new Color(0, 0, 0));
@@ -486,33 +486,33 @@ public class Vista extends JFrame {
 		ponerImagenAJlabel(lblFondoInfo, "fondo_info.jpg", true);
 		ponerImagenAJlabel(lblLogoStreetFighterInfo, "logo_street_fighter.png", false);
 
-		panelJuego = new JPanel();
-		panelJuego.setBounds(0, 0, 847, 603);
-		contentPane.add(panelJuego);
-		panelJuego.setLayout(null);
-		panelJuego.setVisible(false);
+		panelCombate = new JPanel();
+		panelCombate.setBounds(0, 0, 847, 603);
+		contentPane.add(panelCombate);
+		panelCombate.setLayout(null);
+		panelCombate.setVisible(false);
 
 		lblEliminado2 = new JLabel("");
 		lblEliminado2.setBounds(531, 191, 281, 313);
-		panelJuego.add(lblEliminado2);
+		panelCombate.add(lblEliminado2);
 
 		lblEliminado1 = new JLabel("");
 		lblEliminado1.setBounds(24, 209, 283, 295);
-		panelJuego.add(lblEliminado1);
+		panelCombate.add(lblEliminado1);
 
 		progressBarVidaPJ2 = new JProgressBar(0, 100);
 		progressBarVidaPJ2.setForeground(new Color(255, 255, 0));
 		progressBarVidaPJ2.setBackground(new Color(255, 0, 0));
 		progressBarVidaPJ2.setBounds(471, 20, 281, 37);
 		progressBarVidaPJ2.setValue(100);
-		panelJuego.add(progressBarVidaPJ2);
+		panelCombate.add(progressBarVidaPJ2);
 
 		progressBarVidaPJ1 = new JProgressBar(0, 100);
 		progressBarVidaPJ1.setBackground(new Color(255, 0, 0));
 		progressBarVidaPJ1.setForeground(new Color(255, 255, 0));
 		progressBarVidaPJ1.setBounds(85, 20, 281, 37);
 		progressBarVidaPJ1.setValue(100);
-		panelJuego.add(progressBarVidaPJ1);
+		panelCombate.add(progressBarVidaPJ1);
 
 		lblTiempo = new JLabel("60");
 		lblTiempo.setForeground(new Color(255, 255, 255));
@@ -520,124 +520,124 @@ public class Vista extends JFrame {
 		lblTiempo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTiempo.setFont(new Font("Tahoma", Font.BOLD, 26));
 		lblTiempo.setBounds(385, 67, 73, 53);
-		panelJuego.add(lblTiempo);
+		panelCombate.add(lblTiempo);
 
 		btnAtacar = new JButton("ATACAR");
 		btnAtacar.setForeground(new Color(255, 255, 255));
 		btnAtacar.setBackground(new Color(0, 0, 255));
 		btnAtacar.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnAtacar.setBounds(348, 229, 145, 37);
-		panelJuego.add(btnAtacar);
+		panelCombate.add(btnAtacar);
 
 		btnDefender = new JButton("DEFENDER");
 		btnDefender.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnDefender.setForeground(new Color(255, 255, 255));
 		btnDefender.setBackground(new Color(0, 0, 255));
 		btnDefender.setBounds(348, 303, 145, 37);
-		panelJuego.add(btnDefender);
+		panelCombate.add(btnDefender);
 
 		btnDescansar = new JButton("DESCANSAR");
 		btnDescansar.setBackground(new Color(0, 0, 255));
 		btnDescansar.setForeground(new Color(255, 255, 255));
 		btnDescansar.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnDescansar.setBounds(348, 370, 145, 37);
-		panelJuego.add(btnDescansar);
+		panelCombate.add(btnDescansar);
 
 		lblNombrePj1PanelJugar = new JLabel("PJ1");
 		lblNombrePj1PanelJugar.setForeground(new Color(255, 255, 0));
 		lblNombrePj1PanelJugar.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNombrePj1PanelJugar.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblNombrePj1PanelJugar.setBounds(260, 136, 116, 45);
-		panelJuego.add(lblNombrePj1PanelJugar);
+		panelCombate.add(lblNombrePj1PanelJugar);
 
 		lblNombrePj2PanelJugar = new JLabel("PJ2");
 		lblNombrePj2PanelJugar.setForeground(new Color(255, 255, 0));
 		lblNombrePj2PanelJugar.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNombrePj2PanelJugar.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblNombrePj2PanelJugar.setBounds(460, 136, 156, 45);
-		panelJuego.add(lblNombrePj2PanelJugar);
+		panelCombate.add(lblNombrePj2PanelJugar);
 
 		lblImgVS = new JLabel("");
 		lblImgVS.setBounds(385, 130, 73, 65);
-		panelJuego.add(lblImgVS);
+		panelCombate.add(lblImgVS);
 
 		lblImagenJ1Juego = new JLabel("");
 		lblImagenJ1Juego.setBounds(24, 209, 281, 313);
-		panelJuego.add(lblImagenJ1Juego);
+		panelCombate.add(lblImagenJ1Juego);
 
 		lblImagenJ2Juego = new JLabel("");
 		lblImagenJ2Juego.setBounds(531, 196, 281, 313);
-		panelJuego.add(lblImagenJ2Juego);
+		panelCombate.add(lblImagenJ2Juego);
 
 		progressBarVitalidadPj1 = new JProgressBar(0, 100);
 		progressBarVitalidadPj1.setBackground(new Color(128, 128, 128));
 		progressBarVitalidadPj1.setForeground(new Color(255, 255, 255));
 		progressBarVitalidadPj1.setBounds(24, 532, 281, 11);
 		progressBarVitalidadPj1.setValue(100);
-		panelJuego.add(progressBarVitalidadPj1);
+		panelCombate.add(progressBarVitalidadPj1);
 
 		progressBarVitalidadPj2 = new JProgressBar(0, 100);
 		progressBarVitalidadPj2.setBackground(new Color(128, 128, 128));
 		progressBarVitalidadPj2.setForeground(new Color(255, 255, 255));
 		progressBarVitalidadPj2.setBounds(531, 532, 281, 11);
 		progressBarVitalidadPj2.setValue(100);
-		panelJuego.add(progressBarVitalidadPj2);
+		panelCombate.add(progressBarVitalidadPj2);
 
 		btnVolverDesdeJugar = new JButton("Volver");
 		btnVolverDesdeJugar.setForeground(new Color(255, 0, 0));
 		btnVolverDesdeJugar.setBackground(new Color(255, 255, 0));
 		btnVolverDesdeJugar.setBounds(348, 427, 145, 21);
 		btnVolverDesdeJugar.setOpaque(false);
-		panelJuego.add(btnVolverDesdeJugar);
+		panelCombate.add(btnVolverDesdeJugar);
 
 		labelKO = new JLabel("");
 		labelKO.setBounds(386, 20, 62, 37);
-		panelJuego.add(labelKO);
+		panelCombate.add(labelKO);
 
 		lblCansancioPj1 = new JLabel("100");
 		lblCansancioPj1.setForeground(new Color(255, 255, 255));
 		lblCansancioPj1.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblCansancioPj1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCansancioPj1.setBounds(313, 517, 63, 37);
-		panelJuego.add(lblCansancioPj1);
+		panelCombate.add(lblCansancioPj1);
 
 		lblCansancioPj2 = new JLabel("100");
 		lblCansancioPj2.setForeground(new Color(255, 255, 255));
 		lblCansancioPj2.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblCansancioPj2.setBounds(460, 517, 65, 37);
-		panelJuego.add(lblCansancioPj2);
+		panelCombate.add(lblCansancioPj2);
 
 		lblVidaPj1 = new JLabel("100");
 		lblVidaPj1.setForeground(new Color(255, 0, 0));
 		lblVidaPj1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblVidaPj1.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblVidaPj1.setBounds(24, 20, 51, 37);
-		panelJuego.add(lblVidaPj1);
+		panelCombate.add(lblVidaPj1);
 
 		lblVidaPj2 = new JLabel("100");
 		lblVidaPj2.setForeground(new Color(0, 0, 255));
 		lblVidaPj2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblVidaPj2.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblVidaPj2.setBounds(761, 20, 51, 37);
-		panelJuego.add(lblVidaPj2);
+		panelCombate.add(lblVidaPj2);
 
 		lblMensajePj1 = new JLabel("");
 		lblMensajePj1.setForeground(new Color(255, 255, 255));
 		lblMensajePj1.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblMensajePj1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMensajePj1.setBounds(34, 67, 332, 27);
-		panelJuego.add(lblMensajePj1);
+		panelCombate.add(lblMensajePj1);
 
 		lblMensajePj2 = new JLabel("");
 		lblMensajePj2.setForeground(new Color(255, 255, 255));
 		lblMensajePj2.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lblMensajePj2.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMensajePj2.setBounds(481, 71, 328, 27);
-		panelJuego.add(lblMensajePj2);
+		panelCombate.add(lblMensajePj2);
 
 		lblFondoPartida = new JLabel("");
 		lblFondoPartida.setBounds(0, 0, 847, 603);
-		panelJuego.add(lblFondoPartida);
+		panelCombate.add(lblFondoPartida);
 		ponerImagenAJlabel(lblFondoPartida, "fondo_partida.jpeg", true);
 
 		panelMenu = new JPanel();
@@ -776,7 +776,7 @@ public class Vista extends JFrame {
 	}
 
 	public JPanel getPanelDesbloqueoPersonaje() {
-		return panelDesbloqueoPersonaje;
+		return panelPersonajeDesbloqueado;
 	}
 
 	public JPanel getPanelInformacion() {
@@ -884,7 +884,7 @@ public class Vista extends JFrame {
 	}
 
 	public JPanel getPanelJuego() {
-		return panelJuego;
+		return panelCombate;
 	}
 
 	public JButton getBtnAtacar() {

@@ -34,8 +34,7 @@ public class Vista extends JFrame {
 			"zangief_select.jpeg", "dee_jay_select.jpeg","t_hawk_select.jpeg" ,"cammy_select.jpeg", 
 			"balrog_select.jpeg", "vega_select.jpeg", "sagat_select.jpeg","mbison_select.jpeg"  };
 
-	private JButton btnLeyendaPersonajes, btnInfomracion, btnEnfrentamiento, btnModoHistoria,
-			btnMostrarHistoriaPersonaje, btnSeleccionarJugador, btnVolverDesdeSeleccionarPersonaje,
+	private JButton btnLeyendaPersonajes, btnInfomracion, btnEnfrentamiento, btnModoHistoria, btnSeleccionarJugador, btnVolverDesdeSeleccionarPersonaje,
 			btnVolverAtrasDesdeLeyendas, btnAtacar, btnDefender, btnDescansar, btnVolverDesdeJugar, btnJugar;
 
 	private JComboBox<String> comboBoxNombresHistoria;
@@ -80,7 +79,7 @@ public class Vista extends JFrame {
 				try {
 					Vista frame = new Vista();
 					Controlador controlador = new Controlador(frame);
-					frame.setVisible(true);
+					controlador.iniciarVista();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -338,19 +337,12 @@ public class Vista extends JFrame {
 		lblNewLabel_potencia.setBounds(11, 61, 116, 67);
 		panelHistoriaPersonajes.add(lblNewLabel_potencia);
 
-		comboBoxNombresHistoria = new JComboBox();
+		comboBoxNombresHistoria = new JComboBox<>();
 		comboBoxNombresHistoria.setForeground(new Color(255, 255, 255));
 		comboBoxNombresHistoria.setBackground(new Color(0, 128, 255));
 		comboBoxNombresHistoria.setFont(new Font("Dialog", Font.BOLD, 20));
 		comboBoxNombresHistoria.setBounds(547, 48, 248, 39);
 		panelHistoriaPersonajes.add(comboBoxNombresHistoria);
-
-		btnMostrarHistoriaPersonaje = new JButton("Mostrar Historia");
-		btnMostrarHistoriaPersonaje.setForeground(new Color(255, 255, 255));
-		btnMostrarHistoriaPersonaje.setBackground(new Color(0, 128, 255));
-		btnMostrarHistoriaPersonaje.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnMostrarHistoriaPersonaje.setBounds(634, 116, 161, 34);
-		panelHistoriaPersonajes.add(btnMostrarHistoriaPersonaje);
 
 		JLabel lblNewLabel_1 = new JLabel("Nombre: ");
 		lblNewLabel_1.setForeground(new Color(255, 255, 128));
@@ -946,12 +938,7 @@ public class Vista extends JFrame {
 	public JPanel getPanelMenu() {
 		return panelMenu;
 	}
-
-	public JButton getBtnMostrarHistoriaPersonaje() {
-		return btnMostrarHistoriaPersonaje;
-	}
-
-	public JComboBox getComboBoxNombresLuchadores() {
+	public JComboBox<String> getComboBoxNombresLuchadores() {
 		return comboBoxNombresHistoria;
 	}
 

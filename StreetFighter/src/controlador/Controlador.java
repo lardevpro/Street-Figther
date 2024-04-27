@@ -7,8 +7,10 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
@@ -19,10 +21,10 @@ import vista.Vista;
 
 /**
  * 
- * Clase que gestiona las acciones entre la vista y el modelo
- * Maneja los eventos de botones, acciones del usuario y lógica de combate
- * Se responsabiliza de la carga de luchadores, combates, sonidos, música de la aplicación y la
- * gestión de modo historia y modo enfrentamiento
+ * Clase que gestiona las acciones entre la vista y el modelo Maneja los eventos
+ * de botones, acciones del usuario y lógica de combate Se responsabiliza de la
+ * carga de luchadores, combates, sonidos, música de la aplicación y la gestión
+ * de modo historia y modo enfrentamiento
  * 
  * Este controlador sigue el patron de Modelo Vista Controlador (MVC)
  * 
@@ -34,6 +36,13 @@ import vista.Vista;
 
 public class Controlador implements ActionListener, MouseListener {
 
+	// componetes para apuntar a las referencias de la vista
+	private JLabel lblAvisosHistoria, lblPesoHistoria, lblEdadHIstoria, lblImagen, lblFisico, lblPotencia, lblVelocidad,
+			lblEstatura, lblNombreHIstoria;
+	private JTextArea textAreaDescripcionHistoria;
+	private JComboBox<String> luchadoresLista;
+
+	// componentes del controlador
 	private int combatesGanadosEnHistoriaDeSeguido = 0, posicionSeleccionPersonaje = -1;
 	public static int personajesDesbloqueados = 0;
 	public static boolean modoHistoria = false;
@@ -60,8 +69,38 @@ public class Controlador implements ActionListener, MouseListener {
 		computadoras = new ArrayList<Luchador>();
 		cargarLuchadores(jugadores);
 		cargarLuchadores(computadoras);
+
+		// declaración de componentes apuntando a la los componentes de la vista
+		lblAvisosHistoria = vista.getLblAvisosHistoria();
+		lblNombreHIstoria = vista.getLblNombreHIstoria();
+		textAreaDescripcionHistoria = vista.getTextAreaDescripcionHistoria();
+		lblPesoHistoria = vista.getLblPesoHistoria();
+		lblEdadHIstoria = vista.getLblEdadHIstoria();
+		lblImagen = vista.getLblPersonajeHistoriaImagen();
+		lblFisico = vista.getLblFisico();
+		lblPotencia = vista.getLblPotencia();
+		lblVelocidad = vista.getLblVelocidad();
+		lblEstatura = vista.getLblEstatura();
+
+		// en el panelHistori muestra la inforación del personaje seleccionado en el
+		luchadoresLista = vista.getComboBoxNombresLuchadores();
+		luchadoresLista.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mostrarInformacionPersonaje();
+				iniciarSonido(sonido,"seleccion");
+			}
+		});
 	}
 
+	/**
+	 * Inicia la vista
+	 */
+	public void iniciarVista() {
+		vista.setVisible(true);	
+	}
+	
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -72,10 +111,6 @@ public class Controlador implements ActionListener, MouseListener {
 		} else if (e.getSource() == vista.getBtnVolverAtrasDesdeLeyendas()) {
 
 			volverDesdeLeyenda();
-
-		} else if (e.getSource() == vista.getBtnMostrarHistoriaPersonaje()) {
-
-			mostrarInformacionPersonaje();
 
 		} else if (e.getSource() == vista.getBtnEnfrentamiento()) {
 
@@ -97,7 +132,7 @@ public class Controlador implements ActionListener, MouseListener {
 		} else if (e.getSource() == vista.getBtnSeleccionarJugador()) {
 
 			seleccionarJugadorModoEnfrentamiento();
-			if(modoEnfrentamiento)
+			if (modoEnfrentamiento)
 				posicionSeleccionPersonaje = -1;
 
 		} else if (e.getSource() == vista.getBtnSeleccionarComputadora()) {
@@ -125,14 +160,14 @@ public class Controlador implements ActionListener, MouseListener {
 
 				mostrarPanelQueCorresponda(false);
 				refrescarBotonesSeleccionar();
-				
+
 			} else if (combatesGanadosEnHistoriaDeSeguido == 5 && modoHistoria) {
 
 				mostrarPanelQueCorresponda(true);
 				reiniciarModoHistoria(true);
-				
+
 			} else if (modoHistoria && !combateGanado) {
-				
+
 				modoHistoria();
 			}
 
@@ -141,20 +176,19 @@ public class Controlador implements ActionListener, MouseListener {
 			detenerMuscia();
 			iniciarSonido(sonido, "seleccion");
 			irAlSiguientePanel(vista.getPanelDesbloqueoPersonaje(), vista.getPanelSeleccionPersonajes(), 1);
-			
+
 		} else if (e.getSource() == vista.getBtnVovlerDesdeGanador()) {
-			
+
 			detenerMuscia();
 			iniciarSonido(sonido, "seleccion");
-			
-			
+
 			ArrayList<Integer> posicionesDesbloqueadas = vista.getPosicionesDesbloqueadas();
 			if (!posicionesDesbloqueadas.contains(posicionSeleccionPersonaje)) {
 				desbloquearPersonajeVencido();
 				mostrarPersonajeADesbloquear();
 				irAlSiguientePanel(vista.getPanelGanador(), vista.getPanelDesbloqueoPersonaje(), 1);
 				posicionesDesbloqueadas.add(posicionSeleccionPersonaje);
-			}else {
+			} else {
 				irAlSiguientePanel(vista.getPanelGanador(), vista.getPanelSeleccionPersonajes(), 1);
 			}
 
@@ -234,7 +268,7 @@ public class Controlador implements ActionListener, MouseListener {
 		irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
 		jugadorSeleccionado = false;
 		computadoraSeleccionada = false;
-		if(!combateGanado)
+		if (!combateGanado)
 			posicionSeleccionPersonaje = -1;
 		limpiarLabelsDeBorde(true);
 		limpiarLabelsDeBorde(false);
@@ -254,9 +288,9 @@ public class Controlador implements ActionListener, MouseListener {
 		limpiarLabelsDeBorde(true);
 		limpiarLabelsDeBorde(false);
 		combatesGanadosEnHistoriaDeSeguido = 0;
-		if(!finalizado)
+		if (!finalizado)
 			irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
-		
+
 	}
 
 	public void seleccionarJugadorModoEnfrentamiento() {
@@ -281,17 +315,18 @@ public class Controlador implements ActionListener, MouseListener {
 	public void seleccionarComputadoraModoEnfrentamiento() {
 
 		iniciarSonido(sonido, "seleccion");
-		
-		if(posicionSeleccionPersonaje != -1) {	
+
+		if (posicionSeleccionPersonaje != -1) {
 			computadora = computadoras.get(posicionSeleccionPersonaje);
-			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),vista.getLblTitulo2PjSeleccionarPersonaje());
+			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),
+					vista.getLblTitulo2PjSeleccionarPersonaje());
 			computadoraSeleccionada = true;
 			if (jugadorSeleccionado) {
 				prepararBotonJugar();
 				exclamaciones();
 			}
 
-		}else {			
+		} else {
 			vista.getLblAvisosSeleccionarJugador().setText("Debe seleccionar personaje para computadora");
 		}
 
@@ -308,7 +343,7 @@ public class Controlador implements ActionListener, MouseListener {
 		ArrayList<JLabel> labels = vista.getSobrepuestosComputadora();
 
 		System.out.println(posicionSeleccionPersonaje);
-		
+
 		labelsDesactivar.get(posicionSeleccionPersonaje).setEnabled(false);
 		labelsDesactivar.get(posicionSeleccionPersonaje).setBorder(null);
 		vista.ponerImagenAJlabel(labels.get(posicionSeleccionPersonaje), "eliminado.png", true);
@@ -334,7 +369,7 @@ public class Controlador implements ActionListener, MouseListener {
 		combateGanado = false;
 		personajesEliminadosPosicion.clear();
 		posicionSeleccionPersonaje = -1;
-		
+
 		combatesGanadosEnHistoriaDeSeguido = 3;
 		vista.caragarPanelSeleccionDePersonajes();
 		iniciarSeleccionJugadores();
@@ -369,19 +404,19 @@ public class Controlador implements ActionListener, MouseListener {
 		combate.setVistaContador(vista.getLblTiempo());
 		combate.setControlador(this);
 		combate.start();
-		
+
 	}
 
 	/**
-	 * Selección del personaje de la computadora en el modo historia.
-	 * La computadora elige un personaje aleatorio para enfrentarse al jugador.
+	 * Selección del personaje de la computadora en el modo historia. La computadora
+	 * elige un personaje aleatorio para enfrentarse al jugador.
 	 */
 	private void seleccionarComputadoraModoHistoria() {
 
 		if (posicionSeleccionPersonaje != -1) {
 			int aleatorio = 0;
 			computadora = new Luchador();
-			
+
 			ArrayList<JLabel> labels = vista.getSeleccionPersonajes();
 
 			if (combatesGanadosEnHistoriaDeSeguido < 4) {
@@ -448,7 +483,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 			JLabel label = (JLabel) e.getSource();
 
-			if(posicionSeleccionPersonaje == -1)
+			if (posicionSeleccionPersonaje == -1)
 				posicionSeleccionPersonaje = Integer.parseInt(label.getName());
 
 			if (!jugadorSeleccionado) {
@@ -680,6 +715,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	
 	private void irALaPantallaLeyenda() {
 
 		// CONFIGURACIONES DE PANEL
@@ -721,9 +757,9 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-
 	/**
-	 * Método que se encarga de gestionar y preparar la pantalla principal si se desea volver desde el modo leyenda
+	 * Método que se encarga de gestionar y preparar la pantalla principal si se
+	 * desea volver desde el modo leyenda
 	 */
 	private void volverDesdeLeyenda() {
 		detenerMuscia();
@@ -735,11 +771,12 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que se encarga de recoger los nombres de los luchadores en el panel leyenda
-	 * y cargarlos en un JComboBox,este componente interactua con el usuario dándole la opción 
-	 * de seleccionar el que quiere que se muestre
+	 * Método que se encarga de recoger los nombres de los luchadores en el panel
+	 * leyenda y cargarlos en un JComboBox,este componente interactua con el usuario
+	 * dándole la opción de seleccionar el que quiere que se muestre
 	 * 
-	 * @param modelo tipo JComboBox para cargar todos los nombres de los luchadores
+	 * @param modelo     tipo JComboBox para cargar todos los nombres de los
+	 *                   luchadores
 	 * @param luchadores recibe la lista de luchadores que se cargan en el modelo
 	 */
 	public void cargarJComboboxCooNombresLuchadores(DefaultComboBoxModel<String> modelo,
@@ -753,7 +790,8 @@ public class Controlador implements ActionListener, MouseListener {
 
 	/**
 	 * Método que inicia todos los temas musicales referentes al juego
-	 * @param nombreTema que se reproducirá en esa sección 
+	 * 
+	 * @param nombreTema que se reproducirá en esa sección
 	 */
 	public void iniciarMusica(String nombreTema) {
 		this.musica = new Musica("src/musica/" + nombreTema + ".wav");
@@ -761,22 +799,28 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que se encargará de recrear los sonidos correspondientes a un momento breve de tiempo 
-	 * en la aplicación
+	 * Método que se encargará de recrear los sonidos correspondientes a un momento
+	 * breve de tiempo en la aplicación
 	 * 
-	 * @param sonido Objeto de la clase Música que recibre para iniciar o reiniciarlo
+	 * @param sonido Objeto de la clase Música que recibre para iniciar o
+	 *               reiniciarlo
 	 * @nombre String que se refiere al titulo del sonido
 	 * 
 	 */
 	public static void iniciarSonido(Musica sonido, String nombre) {
+		
+		if(sonido != null)
+			sonido.detener();
+		
 		sonido = new Musica("src/musica/" + nombre + ".wav");
 		sonido.reproducir();
 	}
 
 	/**
-	 * Método que se encarga de detener un sonido para que no haya conflictos entre hilos
+	 * Método que se encarga de detener un sonido para que no haya conflictos entre
+	 * hilos
 	 * 
-	 * @param sonido objeto de la clase Musica 
+	 * @param sonido objeto de la clase Musica
 	 */
 	public static void detenerSonido(Musica sonido) {
 		if (sonido != null) {
@@ -786,8 +830,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que se encarga de detener la música antes del transito entre secciones impidiendo conflictos y
-	 * liberando recursos
+	 * Método que se encarga de detener la música antes del transito entre secciones
+	 * impidiendo conflictos y liberando recursos
 	 */
 	public void detenerMuscia() {
 		if (this.musica != null) {
@@ -797,7 +841,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que se encarga de preparar el panel de infromación, sus componentes y multimedia
+	 * Método que se encarga de preparar el panel de infromación, sus componentes y
+	 * multimedia
 	 */
 	private void irAPantallaInformacion() {
 		detenerMuscia();
@@ -809,7 +854,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que se encarga de preparar el panel principal, sus componentes y multimedia
+	 * Método que se encarga de preparar el panel principal, sus componentes y
+	 * multimedia
 	 */
 	private void volverDesdePantallaInformacion() {
 		detenerMuscia();
@@ -821,11 +867,11 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que gestiona los paneles 
+	 * Método que gestiona los paneles
 	 * 
 	 * @param aOcultar objeto tipo JPanle que será ocultado
 	 * @param aMostrar objeto tipo JPanel que se mostrará
-	 * @param pausa tiempo en segundos que habrá de pausa entre cambios de panel
+	 * @param pausa    tiempo en segundos que habrá de pausa entre cambios de panel
 	 */
 	public void irAlSiguientePanel(JPanel aOcultar, JPanel aMostrar, int pausa) {
 		try {
@@ -838,8 +884,9 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que recibe un array de String siendo estos titulos de las voces correspondientes 
-	 * a luchadores, una vez dentro del método se escogerá un sonido aleatorio cada vez
+	 * Método que recibe un array de String siendo estos titulos de las voces
+	 * correspondientes a luchadores, una vez dentro del método se escogerá un
+	 * sonido aleatorio cada vez
 	 * 
 	 * @param voces array de String que recoge las voces de los personajes
 	 */
@@ -849,9 +896,10 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que se encarga de detener el juego por el tiempo deseado cuando se es llamado
+	 * Método que se encarga de detener el juego por el tiempo deseado cuando se es
+	 * llamado
 	 * 
-	 * @param tiempo será los segundos que se detendrá 
+	 * @param tiempo será los segundos que se detendrá
 	 */
 	public void detenerJuego(int tiempo) {
 		try {
@@ -862,7 +910,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/*
-	 * Método que activa los botones del panelCombate (no se puede iniciar con los demás porque el JPanel es creado después)
+	 * Método que activa los botones del panelCombate (no se puede iniciar con los
+	 * demás porque el JPanel es creado después)
 	 */
 	public void activarBotonesPelea() {
 		vista.getBtnAtacar().setEnabled(true);
@@ -872,7 +921,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que muestra el jugador desbloqueado en panelPersonajeDesbloqueado (solo en modo historia)
+	 * Método que muestra el jugador desbloqueado en panelPersonajeDesbloqueado
+	 * (solo en modo historia)
 	 */
 	private void mostrarPersonajeADesbloquear() {
 
@@ -894,7 +944,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que actualiza los marcadores en el panelCombate cada vez que es llamado
+	 * Método que actualiza los marcadores en el panelCombate cada vez que es
+	 * llamado
 	 */
 	public void actualizarVistaCombate() {
 
@@ -914,7 +965,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que carga los escuchadores en el panelSeleccionPersonajes (no se carga al principio porque el panel no es estático)
+	 * Método que carga los escuchadores en el panelSeleccionPersonajes (no se carga
+	 * al principio porque el panel no es estático)
 	 */
 	private void cargarEscuhcadoresSeleccionPersonajesMouseListenerModoHistoria() {
 
@@ -935,7 +987,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/*
-	 * Carga los escuchadores correspondientes para que no se puedan seleccionar  personajes que no han sido seleccionados (solo en modo historia)
+	 * Carga los escuchadores correspondientes para que no se puedan seleccionar
+	 * personajes que no han sido seleccionados (solo en modo historia)
 	 */
 	private void cargarEscuchadoresModoEnfrentamiento() {
 
@@ -951,7 +1004,6 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
-	
 	/**
 	 * Método que hace un reset a los componentes del panelCombate cuando se llama
 	 */
@@ -1064,7 +1116,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que resetea los valores de los componentes en el panelSeleccionarJugador
+	 * Método que resetea los valores de los componentes en el
+	 * panelSeleccionarJugador
 	 */
 	private void limpiarTextosSeleccionJugador() {
 
@@ -1078,7 +1131,8 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Metodo que se encarga de poner exclamaciones en los marcadores de la pantalla panelSeleccionarJugador de que pulsa 'ir a combate'
+	 * Metodo que se encarga de poner exclamaciones en los marcadores de la pantalla
+	 * panelSeleccionarJugador de que pulsa 'ir a combate'
 	 */
 	private void exclamaciones() {
 		vista.getLblFisicoSeleccionarPersonaje().setText("¡");
@@ -1088,39 +1142,58 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-	
+	/**
+	 * Limpia todos los campos de la interfaz de usuario relacionados con la
+	 * historia del jugador estableciendo valores predeterminados o vacíos en cada
+	 * uno de ellos.
+	 */
 	private void limparCamposHistoria() {
 
-		vista.getLblAvisosHistoria().setText("");
-		vista.getLblNombreHIstoria().setText("?");
-		vista.getLblEstatura().setText("?");
-		vista.getTextAreaDescripcionHistoria().setText("?");
-		vista.getLblPesoHistoria().setText("?");
-		vista.getLblEdadHIstoria().setText("?");
-		vista.ponerImagenAJlabel(vista.getLblPersonajeHistoriaImagen(), "interrogacion_historia.png", false);
-		vista.getLblFisico().setText("?");
-		vista.getLblPotencia().setText("?");
-		vista.getLblVelocidad().setText("?");
+		lblAvisosHistoria.setText("");
+		lblNombreHIstoria.setText("?");
+		lblEstatura.setText("?");
+		textAreaDescripcionHistoria.setText("?");
+		lblPesoHistoria.setText("?");
+		lblEdadHIstoria.setText("?");
+		lblFisico.setText("?");
+		lblPotencia.setText("?");
+		lblVelocidad.setText("?");
+
+		vista.ponerImagenAJlabel(vista.getLblPersonajeHistoriaImagen(), "interrogacion_historia.png", false);// cambiar
+																												// imagen
+																												// principal
+																												// por
+																												// una
+																												// interrogacion
+																												// '?'
 
 	}
 
+	/**
+	 * Muestra la información de un jugador en la interfaz de usuario basado en la
+	 * posición especificada. Si la posición es válida, se muestra la información
+	 * del jugador correspondiente. Si la posición es inválida, se muestra un
+	 * mensaje de advertencia en la interfaz de usuario.
+	 *
+	 * @param posicion La posición del jugador en la lista de jugadores.
+	 */
 	public void mostrarJugadorHistoria(int posicion) {
 
 		if (posicion > -1) {
-			String nombresImagenes[] = jugadores.get(posicion).getImgPelea();
-			vista.getLblAvisosHistoria().setText("");
-			vista.getLblNombreHIstoria().setText(jugadores.get(posicion).getNombre());
-			vista.getLblEstatura().setText(jugadores.get(posicion).getEstatura() + " m");
-			vista.getTextAreaDescripcionHistoria().setText(jugadores.get(posicion).getDescripcion());
-			vista.getLblPesoHistoria().setText(jugadores.get(posicion).getPeso() + " kg");
-			vista.getLblEdadHIstoria().setText(jugadores.get(posicion).getEdad() + "");
-			vista.ponerImagenAJlabel(vista.getLblPersonajeHistoriaImagen(), nombresImagenes[0], false);
-			vista.getLblFisico().setText(jugadores.get(posicion).getFisico() + "");
-			vista.getLblPotencia().setText(jugadores.get(posicion).getPotencia() + "");
-			vista.getLblVelocidad().setText(jugadores.get(posicion).getVelocidad() + "");
+			jugador = jugadores.get(posicion);
+			lblAvisosHistoria.setText("");
+			lblEstatura.setText(String.valueOf(jugador.getEstatura()));
+			lblNombreHIstoria.setText(jugador.getNombre());
+			textAreaDescripcionHistoria.setText(jugador.getDescripcion());
+			lblPesoHistoria.setText(jugador.getPeso() + " kg");
+			lblEdadHIstoria.setText(String.valueOf(jugador.getEdad()));
+			vista.ponerImagenAJlabel(lblImagen, jugador.getImgPelea()[0], false);
+			lblFisico.setText(String.valueOf(jugador.getFisico()));
+			lblPotencia.setText(String.valueOf(jugador.getPotencia()));
+			lblVelocidad.setText(String.valueOf(jugador.getVelocidad()));
 		} else {
 			limparCamposHistoria();
-			vista.getLblAvisosHistoria().setText("DEBE SELECCIONAR UN PERSONAJE");
+			lblAvisosHistoria.setText("DEBE SELECCIONAR UN PERSONAJE");
 		}
 
 	}
@@ -1132,7 +1205,6 @@ public class Controlador implements ActionListener, MouseListener {
 		vista.getBtnInfomracion().addActionListener(this);
 		vista.getBtnLeyendaPersonajes().addActionListener(this);
 		vista.getBtnVolverAtrasDesdeLeyendas().addActionListener(this);
-		vista.getBtnMostrarHistoriaPersonaje().addActionListener(this);
 		vista.getBtnAtacar().addActionListener(this);
 		vista.getBtnDefender().addActionListener(this);
 		vista.getBtnDescansar().addActionListener(this);
@@ -1143,154 +1215,108 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Método que
+	 */
 	private void listenerPanelSeleccionerPersonajes() {
-
 		vista.getBtnJugar().addActionListener(this);
 		vista.getBtnVolverDesdeSeleccionarPersonaje().addActionListener(this);
 		vista.getBtnSeleccionarJugador().addActionListener(this);
 		vista.getBtnSeleccionarComputadora().addActionListener(this);
-
 	}
 
 	/**
-	 * Método que se encarga de cargar la información, imagenes y sonidos de cada uno de los luchadores
-	 * 
-	 * @param luchadores estructura de almacenamiento donde se almacena cada luchador
+	 * Carga una lista de luchadores con sus respectivas características y detalles
+	 * de la historia. Agrega los luchadores a la lista proporcionada como
+	 * parámetro.
+	 *
+	 * @param luchadores La lista de luchadores a la que se agregarán los luchadores
+	 *                   cargados.
 	 */
 	public void cargarLuchadores(ArrayList<Luchador> luchadores) {
 
-		String imgPeleaRyu[] = { "ryu_historia.png", "ryu_ataque1.png", "ryu_ataque2.png", "ryu_ataque3.png" };
-		String vocesPersonajeRyu[] = { "ryu_pierde", "ryus-hadouken", "ryus-shoryuken", "ryus-tatsumaki" };
-		Luchador ryu = new Luchador("Ryu", 26, 27, 1.75, 32, "Japón", 85, 31,
-				"Luchador entrenado por Gouken famoso por su potente Hadoken, golpe ganador con el que derrotó\n"
-						+ "a Sagat en el primer torneo y lo hirió gravemente.",
-				vocesPersonajeRyu, imgPeleaRyu, false);
+		Luchador luchadorAux;
+		// Información de los luchadores
+		String[][] infoLuchadores = {
+				// Nombre, País, Edad, Estatura, Peso, Potencia, Velocidad, Físico, Descripción,imagenes, voces
+				{ "Ryu", "Japón", "26", "1.75", "85", "27", "32", "31",
+						"Luchador entrenado por Gouken famoso por su potente Hadoken, golpe ganador con el que derrotó\r\na Sagat en el primer torneo y lo hirió gravemente.",
+						"ryu_historia.png", "ryu_ataque1.png", "ryu_ataque2.png", "ryu_ataque3.png", "ryu_pierde",
+						"ryus-hadouken", "ryus-shoryuken", "ryus-tatsumaki" },
+				{ "Ken", "EEUU", "25", "1.75", "86", "28", "30", "32",
+						"Descendiente de una rica familia estadounidense,su padre pagó para formarle en kárate.\r\nDiscípulo de Gouken igual que Ryu pretende ser el mejor luchador del mundo, por encima de Ryu.",
+						"ken_historia.png", "ken_ataque1.png", "ken_ataque2.png", "ken_ataque3.png", "kens-death",
+						"kens-hadouken", "kens-shoryuken", "kens-tatsumaki" },
+				{ "Guile", "EEUU", "42", "1.85", "100", "34", "23", "33",
+						"Ingresa al torneo para poner a M.Bison bajo custodia por ser el asesino de su mejor amigo\r\nCharlie, sólo la victoria sobre el mismo le hará enfrentarse a él y poder derrotarlo.",
+						"guile_historia.png", "guile_ataque1.png", "guile_ataque2.png", "guile_ataque3.png",
+						"guile_dead", "guile_sarenKum", "guile_3", "guile_4" },
+				{ "Chun-Li", "China", "19", "1.65", "58", "18", "21", "51",
+						"Artista marcial experta y oficial de la Interpol. Sin descanso, ella busca venganza por la muerte de\r\nsu padre a manos del líder de la organización criminal Shadaloo, M.Bison.",
+						"chun_li_historia.png", "chun_li_ataque1.png", "chun_li_ataque2.png", "chun_li_ataque3.png",
+						"chun_li_dead", "chun_li_ataque1", "chun_li_ataque2", "chun_li_ataque3" },
+				{ "Honda", "Japón", "40", "1.89", "170", "46", "26", "18",
+						"Luchador de sumo profesional de Japón que entra al torneo para demostrar que el sumo es el\r\nmejor estilo de lucha del mundo por lo que retará a todo el que pretenda enfrentarse a él.",
+						"honda_historia.png", "honda_ataque1.png", "honda_ataque2.png", "honda_ataque3.png",
+						"honda_dead", "honda_ataque1", "honda_ataque2", "honda_ataque3" },
+				{ "Dhalsim", "India", "58", "1.76", "65", "24", "32", "34",
+						"Pacifista pero entró a un torneo de lucha para recaudar dinero para su aldea empobrecida.\r\nHa dedicado su vida a la meditación lo que le permite expulsar fuego por la boca y estirar su cuerpo.",
+						"dhalsim_historia.png", "dhalsim_ataque1.png", "dhalsim_ataque2.png", "dhalsim_ataque3.png",
+						"dhalsim_dead", "dhalsim_ataque1", "dhalsim_ataque2", "dhalsim_ataque3" },
+				{ "Blanka", "Brasil", "22", "1.85", "98", "22", "36", "32",
+						"Hombre brasileño cuyo cuerpo ha sido infectado con demasiada clorofila proveniente de las selvas\r\ndonde vive. Es famoso por su movimiento especial eléctrico y sus movimientos rodantes.",
+						"blanka_historia.png", "blanka_ataque1.png", "blanka_ataque2.png", "blanka_ataque3.png",
+						"blanka_dead", "blanka_ataque1", "blanka_ataque2", "blanka_ataque3" },
+				{ "Zangief", "Rusia", "44", "2.13", "160", "39", "36", "15",
+						"Luchador ruso acostumbrado a entrenar con grandes osos. Es un luchador lento, pero si\r\nlogra agarrarte, estás acabado. Ingresa al evento por motivos económicos.",
+						"zangief_historia.png", "zangief_ataque1.png", "zangief_ataque2.png", "zangief_ataque3.png",
+						"zangief_dead", "zangief_ataque1", "zangief_ataque2", "zangief_ataque3" },
+				{ "Dee Jay", "Jamaica", "31", "1.89", "87", "26", "25", "39",
+						"Cantante que se interesó en un torneo de lucha como medio para ganar popularidad. Su fortaleza\r\nviene de un desastre en un concierto que le hizo ganar una onda expansiva en sus puños.",
+						"dee_jay_historia.png", "dee_jay_ataque1.png", "dee_jay_ataque2.png", "dee_jay_ataque3.png",
+						"dee_jay_dead", "dee_jay_ataque1", "dee_jay_ataque2", "dee_jay_ataque3" },
+				{ "T.Hawk", "Mexico", "39", "2.06", "112", "37", "31", "22",
+						"Ingresa al torneo para vengar a sus compatriotas indios nativos, ya que Bison destruyó\r\nsu asentamiento por el oro y la cantidad de riquezas que poseían.",
+						"thawk_historia.png", "thahwk_ataque1.png", "thahwk_ataque2.png", "thahwk_ataque3.png",
+						"t_hawk_dead", "t_hawk_ataque1", "t_hawk_ataque2", "t_hawk_ataque3" },
+				{ "Cammy", "Reino Unido", "26", "1.68", "65", "12", "33", "45",
+						"Tiene algunos lazos misteriosos con M.Bison, es una especialista de las fuerzas especiales del\r\nejército británico conocido como Delta Red.",
+						"cammy_historia.png", "cammy_ataque1.png", "cammy_ataque2.png", "cammy_ataque3.png",
+						"cammy_dead", "cammy_ataque1", "cammy_ataque2", "cammy_ataque3" },
+				{ "Balrog", "EEUU", "35", "1.98", "118", "55", "16", "17",
+						"Ex boxeador profesional que trabaja bajo las órdenes de M.Bison en la organización criminal de\r\nShadaloo. Lucha pura y exclusivamente con los puños.",
+						"balrog_historia.png", "balrog_ataque1.png", "balrog_ataque2.png", "balrog_ataque3.png",
+						"balrog_dead", "balrog_ataque1", "balrog_ataque2", "balrog_ataque3" },
+				{ "Sagat", "Tailandia", "49", "2.25", "150", "35", "35", "20",
+						"Integrante de Shadaloo, ingresa al torneo por venganza contra Ryu que años antes en una pelea le\r\nncausó la cicatriz que tiene en el pecho.",
+						"sagat_historia.png", "sagat_ataque1.png", "sagat_ataque2.png", "sagat_ataque3.png",
+						"sagat_dead", "sagat_ataque1", "sagat_ataque2", "sagat_ataque3" },
+				{ "M.Bison", "Desconocida", "51", "2.10", "115", "37", "38", "25",
+						"Líder de la organización criminal de Shadaloo. Es el organizador principal del torneo, aunque\r\n realmente es una tapadera, es un contrabandista de armas y drogas cegado por el poder.",
+						"mbison_historia.png", "mbison_ataque1.png", "mbison_ataque2.png", "mbison_ataque3.png",
+						"m_bison_dead", "m_bison_ataque1", "m_bison_ataque2", "m_bison_ataque3" } };
 
-		String imgPeleaKen[] = { "ken_historia.png", "ken_ataque1.png", "ken_ataque2.png", "ken_ataque3.png" };
-		String vocesPersonajeKen[] = { "kens-death", "kens-hadouken", "kens-shoryuken", "kens-tatsumaki" };
-		Luchador ken = new Luchador("Ken", 25, 28, 1.75, 30, "EEUU", 86, 32,
-				"Descendiente de una rica familia estadounidense,su padre pagó para formarle en kárate.\n"
-						+ "Discípulo de Gouken igual que Ryu pretende ser el mejor luchador del mundo, por encima de Ryu.",
-				vocesPersonajeKen, imgPeleaKen, false);
+		//bucle que introduce la información en los objetos luchador
+		for (String[] info : infoLuchadores) {
+			
+			//recogida de datos
+			String nombre = info[0];
+			String pais = info[1];
+			int edad = Integer.parseInt(info[2]);
+			double estatura = Double.parseDouble(info[3]);
+			int peso = Integer.parseInt(info[4]);
+			int potencia = Integer.parseInt(info[5]);
+			int velocidad = Integer.parseInt(info[6]);
+			int fisico = Integer.parseInt(info[7]);
+			String descripcion = info[8];
+			String[] imgPelea = { info[9], info[10], info[11], info[12] };
+			String[] voces = { info[13], info[14], info[15], info[16] };
 
-		String imgPeleaGuile[] = { "guile_historia.png", "guile_ataque1.png", "guile_ataque2.png",
-				"guile_ataque3.png" };
-		String vocesPersonajeGuile[] = { "guile_dead", "guile_sarenKum", "guile_3", "guile_4" };
-		Luchador guile = new Luchador("Guile", 42, 34, 1.85, 23, "EEUU", 100, 33,
-				"Ingresa al torneo para poner a M.Bison bajo custodia por ser el asesino de su mejor amigo\n"
-						+ "Charlie, sólo la victoria sobre el mismo le hará enfrentarse a él y poder derrotarlo.",
-				vocesPersonajeGuile, imgPeleaGuile, false);
+			//creación del luchador
+			luchadorAux = new Luchador(nombre, edad, potencia, estatura, velocidad, pais, peso, fisico, descripcion,voces, imgPelea, true);
 
-		String imgPeleaChunLi[] = { "chun_li_historia.png", "chun_li_ataque1.png", "chun_li_ataque2.png",
-				"chun_li_ataque3.png" };
-		String vocesPersonajeChunLi[] = { "chun_li_dead", "chun_li_ataque1", "chun_li_ataque2", "chun_li_ataque3" };
-		Luchador chun_li = new Luchador("Chun-Li", 19, 18, 1.65, 21, "China", 58, 51,
-				"Artista marcial experta y oficial de la Interpol. Sin descanso, ella busca venganza por la muerte de\n"
-						+ "su padre a manos del líder de la organización criminal Shadaloo, M.Bison.",
-				vocesPersonajeChunLi, imgPeleaChunLi, false);
-
-		String imgPeleaHonda[] = { "honda_historia.png", "honda_ataque1.png", "honda_ataque2.png",
-				"honda_ataque3.png" };
-		String vocesPersonajeHonda[] = { "honda_dead", "honda_ataque1", "honda_ataque2", "honda_ataque3" };
-		Luchador honda = new Luchador("Honda", 40, 46, 1.89, 26, "Japón", 170, 18,
-				"Luchador de sumo profesional de Japón que entra al torneo para demostrar que el sumo es el\n"
-						+ "mejor estilo de lucha del mundo por lo que retará a todo el que pretenda enfrentarse a él.",
-				vocesPersonajeHonda, imgPeleaHonda, false);
-
-		String imgPeleaDhalsim[] = { "dhalsim_historia.png", "dhalsim_ataque1.png", "dhalsim_ataque2.png",
-				"dhalsim_ataque3.png" };
-		String vocesPersonajeDhalsim[] = { "dhalsim_dead", "dhalsim_ataque1", "dhalsim_ataque2", "dhalsim_ataque3" };
-		Luchador dhalsim = new Luchador("Dhalsim", 58, 24, 1.76, 32, "India", 65, 34,
-				"Pacifista pero entró a un torneo de lucha para recaudar dinero para su aldea empobrecida.\n"
-						+ "Ha dedicado su vida a la meditación lo que le permite expulsar fuego por la boca y estirar su cuerpo.",
-				vocesPersonajeDhalsim, imgPeleaDhalsim, true);
-
-		String imgPeleaBlanka[] = { "blanka_historia.png", "blanka_ataque1.png", "blanka_ataque2.png",
-				"blanka_ataque3.png" };
-		String vocesPersonajeBlanka[] = { "blanka_dead", "blanka_ataque1", "blanka_ataque2", "blanka_ataque3" };
-		Luchador blanka = new Luchador("Blanka", 27, 22, 1.85, 36, "Brasil", 98, 32,
-				"Hombre brasileño cuyo cuerpo ha sido infectado con demasiada clorofila proveniente de las selvas\n"
-						+ "donde vive. Es famoso por su movimiento especial eléctrico y sus movimientos rodantes.",
-				vocesPersonajeBlanka, imgPeleaBlanka, true);
-
-		String imgPeleaVega[] = { "vega_historia.png", "vega_ataque1.png", "vega_ataque2.png", "vega_ataque3.png" };
-		String vocesPersonajeVega[] = { "vega_dead", "vega_ataque1", "vega_ataque2", "vega_ataque3" };
-		Luchador vega = new Luchador("Vega", 24, 28, 1.86, 34, "España", 80, 28,
-				"Luchador español contratado por Shadoloo que utiliza un estilo de lucha muy particular en el que\n"
-						+ "mezcla una rápida habilidad de esquiva parecida a la esgrima con una potente garra.",
-				vocesPersonajeVega, imgPeleaVega, true);
-
-		String imgPeleaZangief[] = { "zangief_historia.png", "zangief_ataque1.png", "zangief_ataque2.png",
-				"zangief_ataque3.png" };
-		String vocesPersonajeZangief[] = { "zangief_dead", "zangief_ataque1", "zangief_ataque2", "zangief_ataque3" };
-		Luchador zangief = new Luchador("Zangief", 44, 39, 2.13, 36, "Rusia", 160, 15,
-				"Luchador ruso acostumbrado a entrenar con grandes osos. Es un luchador lento, pero si\n"
-						+ "logra agarrarte, estás acabado. Ingresa al evento por motivos económicos.",
-				vocesPersonajeZangief, imgPeleaZangief, true);
-
-		String imgPeleaDeeJay[] = { "dee_jay_historia.png", "dee_jay_ataque1.png", "dee_jay_ataque2.png",
-				"dee_jay_ataque3.png" };
-		String vocesPersonajeDeeJay[] = { "dee_jay_dead", "dee_jay_ataque1", "dee_jay_ataque2", "dee_jay_ataque3" };
-		Luchador deeJay = new Luchador("Dee Jay", 31, 26, 1.89, 25, "Jamaica", 87, 39,
-				"Cantante que se interesó en un torneo de lucha como medio para ganar popularidad. Su fortaleza\n"
-						+ "viene de un desastre en un concierto que le hizo ganar una onda expansiva en sus puños.",
-				vocesPersonajeDeeJay, imgPeleaDeeJay, true);
-
-		String imgPeleaTHawk[] = { "thawk_historia.png", "thahwk_ataque1.png", "thahwk_ataque2.png",
-				"thahwk_ataque3.png" };
-		String vocesPersonajeThawk[] = { "t_hawk_dead", "t_hawk_ataque1", "t_hawk_ataque2", "t_hawk_ataque3" };
-		Luchador thawk = new Luchador("T.Hawk", 39, 37, 2.06, 31, "México", 112, 22,
-				"Ingresa al torneo para vengar a sus compatriotas indios nativos, ya que Bison destruyó\n"
-						+ "su asentamiento por el oro y la cantidad de riquezas que poseían.",
-				vocesPersonajeThawk, imgPeleaTHawk, true);
-
-		String imgPeleaCammy[] = { "cammy_historia.png", "cammy_ataque1.png", "cammy_ataque2.png",
-				"cammy_ataque3.png" };
-		String vocesPersonajeCammy[] = { "cammy_dead", "cammy_ataque1", "cammy_ataque2", "cammy_ataque3" };
-		Luchador cammy = new Luchador("Cammy", 26, 12, 1.68, 33, "Reino Unido", 65, 45,
-				"Tiene algunos lazos misteriosos con M.Bison, es una especialista de las fuerzas especiales del\n"
-						+ "ejército británico conocido como Delta Red.",
-				vocesPersonajeCammy, imgPeleaCammy, true);
-
-		String imgPeleaBalrog[] = { "balrog_historia.png", "balrog_ataque1.png", "balrog_ataque2.png",
-				"balrog_ataque2.png" };
-		String vocesPersonajeBalrog[] = { "balrog_dead", "balrog_ataque1", "balrog_ataque2", "balrog_ataque3" };
-		Luchador balrog = new Luchador("Balrog", 35, 55, 1.98, 16, "EEUU", 118, 17,
-				"Ex boxeador profesional que trabaja bajo las órdenes de M.Bison en la organización criminal de\n"
-						+ "Shadaloo. Lucha pura y exclusivamente con los puños.",
-				vocesPersonajeBalrog, imgPeleaBalrog, true);
-
-		String imgPeleaSagat[] = { "sagat_historia.png", "sagat_ataque1.png", "sagat_ataque2.png",
-				"sagat_ataque3.png" };
-		String vocesPersonajeSagat[] = { "sagat_dead", "sagat_ataque1", "sagat_ataque2", "sagat_ataque3" };
-		Luchador sagat = new Luchador("Sagat", 49, 35, 2.25, 35, "Tailandia", 150, 20,
-				"Integrante de Shadaloo, ingresa al torneo por venganza contra Ryu que años antes en una pelea le\n"
-						+ "causó la cicatriz que tiene en el pecho.",
-				vocesPersonajeSagat, imgPeleaSagat, true);
-
-		String imgPeleaMbison[] = { "mbison_historia.png", "mbison_ataque1.png", "mbison_ataque2.png",
-				"mbison_ataque3.png" };
-		String vocesPersonajeMbison[] = { "m_bison_dead", "m_bison_ataque1", "m_bison_ataque2", "m_bison_ataque3" };
-		Luchador Mbison = new Luchador("M.Bison", 51, 37, 2.10, 38, "Desconocida", 115, 25,
-				"Líder de la organización criminal de Shadaloo. Es el organizador principal del torneo, aunque\r\n"
-						+ "realmente es una tapadera, es un contrabandista de armas y drogas cegado por el poder.",
-				vocesPersonajeMbison, imgPeleaMbison, true);
-
-		luchadores.add(ryu);
-		luchadores.add(ken);
-		luchadores.add(guile);
-		luchadores.add(chun_li);
-		luchadores.add(honda);
-		luchadores.add(dhalsim);
-		luchadores.add(blanka);
-		luchadores.add(zangief);
-		luchadores.add(deeJay);
-		luchadores.add(thawk);
-		luchadores.add(cammy);
-		luchadores.add(balrog);
-		luchadores.add(vega);
-		luchadores.add(sagat);
-		luchadores.add(Mbison);
-
+			//almacenamiento de los luchadores en una lista
+			luchadores.add(luchadorAux);
+		}
 	}
 }

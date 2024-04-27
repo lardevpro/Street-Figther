@@ -427,8 +427,6 @@ public class Controlador implements ActionListener, MouseListener {
 		ArrayList<JLabel> labelsDesactivar = vista.getSeleccionComputadora();
 		ArrayList<JLabel> labels = vista.getSobrepuestosComputadora();
 
-		System.out.println(posicionSeleccionPersonaje);
-
 		labelsDesactivar.get(posicionSeleccionPersonaje).setEnabled(false);
 		labelsDesactivar.get(posicionSeleccionPersonaje).setBorder(null);
 		vista.ponerImagenAJlabel(labels.get(posicionSeleccionPersonaje), "eliminado.png", true);
@@ -533,7 +531,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 			ponerBordeSeleccionPersonaje(aleatorio, false);
 
-			System.out.println(posicionSeleccionPersonaje);
+			
 			posicionSeleccionPersonaje = aleatorio;
 
 			mostrarJugadorSonidoVozSeleccionado(posicionSeleccionPersonaje, vista.getLblImgJ2Seleccionado(),

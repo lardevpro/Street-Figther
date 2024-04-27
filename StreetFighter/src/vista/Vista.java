@@ -25,6 +25,11 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
+/**
+ * Representa la interfaz gráfica del juego, extiende la clase JFrame para proporcionar una ventana de la aplicación.
+ * Almacena las posiciones de los personajes desbloqueados en una lista.
+ */
+
 public class Vista extends JFrame {
 
 	private ArrayList<Integer> posicionesDesbloqueadas;
@@ -35,11 +40,12 @@ public class Vista extends JFrame {
 			"balrog_select.jpeg", "vega_select.jpeg", "sagat_select.jpeg","mbison_select.jpeg"  };
 
 	private JButton btnLeyendaPersonajes, btnInfomracion, btnEnfrentamiento, btnModoHistoria, btnSeleccionarJugador, btnVolverDesdeSeleccionarPersonaje,
-			btnVolverAtrasDesdeLeyendas, btnAtacar, btnDefender, btnDescansar, btnVolverDesdeJugar, btnJugar;
+			btnVolverAtrasDesdeLeyendas, btnAtacar, btnDefender, btnDescansar, btnVolverDesdeJugar, btnJugar, btnVovlerDesdeGanador, btnSeleccionarComputadora,
+			btnContinuarDesbloquePersonaje,btnVolverDeInfo;
 
 	private JComboBox<String> comboBoxNombresHistoria;
 	private JPanel contentPane, panelHistoriaPersonajes, panelMenu, panelSeleccionPersonajes, panelCombate,
-			panelInformacion, panelPersonajeDesbloqueado;
+			panelInformacion, panelPersonajeDesbloqueado, panelGanador ;
 
 	private JLabel lblEstatura, lblPesoHistoria, lblEdadHIstoria, lblNombreHIstoria, lblPersonajeHistoriaImagen,
 			lblAvisosHistoria, lblNewLabel_potencia, lblNewLabel_velocidad, lblNewLabel_fisico, lblPotencia,
@@ -53,25 +59,20 @@ public class Vista extends JFrame {
 			lblFondoInfo, lblNombreDesbloqueo, lblLogoStreetFighterInfo, lblEdadDesbloqueoPersonaje,
 			lblEstaturaDesbloqueoPersonaje, lblPesoDesbloqueoPersonaje, lblFisicoDesbloqueoPersonaje,
 			labelVelocidadDesbloqueoPersonaje, lblTituloDesbloqueoPersonaje, lblImgJugadorDesbloqueado,
-			lblPtenciaDesbloquearPersonaje, lblNewLabel_11, lblCandado, lblMensajeDesbloqueado;
+			lblPtenciaDesbloquearPersonaje, lblNewLabel_11, lblCandado, lblMensajeDesbloqueado,lblFondoGanador,
+			lblLogoStreetFighter,lblimgGanador ;
 
 	private ArrayList<JLabel> seleccionPersonajes,seleccionComputadora,sobrepuestosComputadora;
-	private JProgressBar progressBarVidaPJ2, progressBarVidaPJ1;
-	private JProgressBar progressBarVitalidadPj1, progressBarVitalidadPj2;
+	private JProgressBar progressBarVidaPJ2, progressBarVidaPJ1,progressBarVitalidadPj1, progressBarVitalidadPj2;
 	private JTextArea textAreaDescripcionHistoria, textAreaScrollPanel;
 	private JScrollPane scrollPaneInfo;
-	private JButton btnVolverDeInfo;
-	private JButton btnContinuarDesbloquePersonaje;
 	private JTextPane textPaneDescripcionDesbloqueo;
-	private JButton btnSeleccionarComputadora;
-	private JLabel lblFondoGanador;
-	private JButton btnVovlerDesdeGanador;
-	private JLabel lblLogoStreetFighter;
-	private JLabel lblimgGanador;
-	private JPanel panelGanador;
+
 
 	/**
-	 * Launch the application.
+	 * Método principal que inicia la aplicación.
+	 * 
+	 * @param args Los argumentos de la línea de comandos (no utilizados en este caso).
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -1037,12 +1038,12 @@ public class Vista extends JFrame {
 		label.setOpaque(opaque);
 	}
 
-	// CARGA DE BOTONES
+	/**
+	 * Carga el panel de combate de forma que los jlabls son dinamicos dependiendo el modo (historia o combate)
+	 */
 	public void caragarPanelSeleccionDePersonajes() {
 
-		
-		
-		
+
 		panelSeleccionPersonajes = new JPanel();
 		panelSeleccionPersonajes.setBounds(2, 0, 835, 603);
 		contentPane.add(panelSeleccionPersonajes);
@@ -1193,6 +1194,10 @@ public class Vista extends JFrame {
 		
 	}
 
+	/**
+	 * Coloca los JLabels que representan los personajes en el panel de selección de personajes, tanto para el jugador como para la computadora.
+	 * Los JLabels se colocan en filas y columnas, mostrando las imágenes de los personajes disponibles.
+	 */
 	public void ponerJlabelsPesonajes() {
 		
 		seleccionComputadora.clear();
@@ -1282,27 +1287,51 @@ public class Vista extends JFrame {
 		}
 	}
 	
+	/**
+	 * Carga las instrucciones del juego en formato de texto para mostrar en un JScrollPane.
+	 *
+	 * @return Las instrucciones del juego en formato de texto.
+	 */
 	public String cargarScrollPanel() {
+	    
+	    String objetivoGeneral = " *** 1. Objetivo General ***\n"
+	            + " - Vencer al adversario:\n    reducir su vida a cero o mantener mayor nivel de vida al acabado el  tiempo.\n";
+	    
+	    String elementosJuego = " *** 2. Elementos del Juego ***\n"
+	            + " *** 2.1 Personajes ***\n\n"
+	            + " - Atributos:\n"
+	            + "    - Potencia\n"
+	            + "    - Velocidad\n"
+	            + "    - Físico\n"
+	            + "    - Vida\n"
+	            + "    - Cansancio(Vitalidad)\n"
+	            + "\n\n"
+	            + " *** 2.2 Acciones Disponibles ***\n"
+	            + "\n"
+	            + " | Acción               | Descripción                                                                   | Procedimiento                                    | Requisitos                        | Beneficio                                |\n"
+	            + " |-------------------|-------------------------------------------------------------- |--------------------------------------------|------------------------------|-----------------------------------|\n"
+	            + " | **Atacar**         | Lanza un ataque contra el oponente.                          | Valor aleatorio (1 - potencia)             | Vitalidad >= Daño           | Inflige daño al oponente.    |\n"
+	            + " | **Defender**    | Prepara una defensa contra el ataque enemigo.        | Valor aleatorio (1 - velocidad)            | N/A                                   | Reduce el daño recibido.     |\n"
+	            + " | **Descansar**   | Recupérate y fortalécete durante tu turno.                | Valor aleatorio (1 - físico)                   | N/A                                   | Aumenta la vitalidad.           |\n";
 
-		String instrucciones = " *** Instrucciones del Juego ***\n" + "\n" + " *** 1. Objetivo General ***\n"
-				+ " - Vencer al adversario:\n    reducir su vida a cero o mantener mayor nivel de vida al acabado el  tiempo.\n"
-				+ "\n" + " *** 2. Elementos del Juego ***\n" + " *** 2.1 Personajes ***\n\n" + " - Atributos:\n"
-				+ "    - Potencia\n" + "    - Velocidad\n" + "    - Físico\n" + "    - Vida\n"
-				+ "    - Cansancio(Vitalidad)\n" + "\n\n" + " *** 2.2 Acciones Disponibles ***\n" + "\n"
-				+ " | Acción               | Descripción                                                                   | Procedimiento                                    | Requisitos                        | Beneficio                                |\n"
-				+ " |-------------------|-------------------------------------------------------------- |--------------------------------------------|------------------------------|-----------------------------------|\n"
-				+ " | **Atacar**         | Lanza un ataque contra el oponente.                          | Valor aleatorio (1 - potencia)             | Vitalidad >= Daño           | Inflige daño al oponente.    |\n"
-				+ " | **Defender**    | Prepara una defensa contra el ataque enemigo.        | Valor aleatorio (1 - velocidad)            | N/A                                   | Reduce el daño recibido.     |\n"
-				+ " | **Descansar**   | Recupérate y fortalécete durante tu turno.                | Valor aleatorio (1 - físico)                   | N/A                                   | Aumenta la vitalidad.           |\n"
-				+ "\n" + " *** 3. Condiciones de Victoria ***\n" + "\n"
-				+ " | Condición                    | Criterio                                                      |\n"
-				+ " |-------------------------- |-------------------------------------------------|\n"
-				+ " | **Derrota por Vida**  | Reduce la vida del oponente a cero.        |\n" + "\n"
-				+ " *** 4. Consideraciones Adicionales***\n"
-				+ "    - La táctica es esencial; selecciona acciones según el estado y situación.\n"
-				+ "    - Administrar la vitalidad adecuadamente prolonga tu duración en el combate.\n\n\n";
+	    String condicionesVictoria = " *** 3. Condiciones de Victoria ***\n"
+	            + "\n"
+	            + " | Condición                    | Criterio                                                      |\n"
+	            + " |-------------------------- |-------------------------------------------------|\n"
+	            + " | **Derrota por Vida**  | Reduce la vida del oponente a cero.        |\n"
+	            + "\n";
 
-		return instrucciones;
+	    String consideracionesAdicionales = " *** 4. Consideraciones Adicionales***\n"
+	            + "    - La táctica es esencial; selecciona acciones según el estado y situación.\n"
+	            + "    - Administrar la vitalidad adecuadamente prolonga tu duración en el combate.\n\n\n";
 
+	    // Concatenar las secciones de instrucciones
+	    String instrucciones = " *** Instrucciones del Juego ***\n\n" 
+	            + objetivoGeneral + "\n" 
+	            + elementosJuego + "\n" 
+	            + condicionesVictoria + "\n" 
+	            + consideracionesAdicionales;
+
+	    return instrucciones;
 	}
 }

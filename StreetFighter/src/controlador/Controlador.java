@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,44 +37,84 @@ import vista.Vista;
 
 public class Controlador implements ActionListener, MouseListener {
 
-	// componetes para apuntar a las referencias de la vista
-	private JLabel lblAvisosHistoria, lblPesoHistoria, lblEdadHIstoria, lblImagen, lblFisico, lblPotencia, lblVelocidad,
-			lblEstatura, lblNombreHIstoria;
-	private JTextArea textAreaDescripcionHistoria;
-	private JComboBox<String> luchadoresLista;
 
-	// componentes del controlador
-	private int combatesGanadosEnHistoriaDeSeguido = 0, posicionSeleccionPersonaje = -1;
-	public static int personajesDesbloqueados = 0;
-	public static boolean modoHistoria = false;
-	private boolean combateGanado = false, modoEnfrentamiento = false, volverDesdeInicio = true,
-			jugadorSeleccionado = false, computadoraSeleccionada = false, escuchadoresPanelSeleccionPersonaje = false;
-	private Combate combate;
-	private Vista vista;
-	private Musica musica, sonido;
-	private Luchador jugador, computadora;
-	private ArrayList<Luchador> jugadores, computadoras;
-	private DefaultComboBoxModel<String> jComboLuchadores;
-	private ArrayList<Integer> personajesEliminadosPosicion;
+    // Componentes para apuntar a las referencias de la vista
+	
+	
+    private JLabel lblAvisosHistoria; // Etiqueta para mostrar avisos relacionados con la historia
+    private JLabel lblPesoHistoria; // Etiqueta para mostrar el peso del personaje en la historia
+    private JLabel lblEdadHIstoria; // Etiqueta para mostrar la edad del personaje en la historia
+    private JLabel lblImagen; // Etiqueta para mostrar la imagen del personaje
+    private JLabel lblFisico; // Etiqueta para mostrar el físico del personaje
+    private JLabel lblPotencia; // Etiqueta para mostrar la potencia del personaje
+    private JLabel lblVelocidad; // Etiqueta para mostrar la velocidad del personaje
+    private JLabel lblEstatura; // Etiqueta para mostrar la estatura del personaje
+    private JLabel lblNombreHIstoria; // Etiqueta para mostrar el nombre del personaje en la historia
+    private JTextArea textAreaDescripcionHistoria; // Área de texto para mostrar la descripción de la historia
+    private JComboBox<String> luchadoresLista; // Lista desplegable de luchadores disponibles
+    private JButton btnAtacar, btnDefender, btnDescansar; // Botones para realizar acciones durante el combate
 
+    // Componentes del controlador
+    private int combatesGanadosEnHistoriaDeSeguido = 0; // Contador de combates ganados en la historia de seguido
+    private int posicionSeleccionPersonaje = -1; // Posición del personaje seleccionado
+    /**
+     *Número de personajes desbloqueados
+     */
+    public static int personajesDesbloqueados = 0; 
+    
+    /**
+     *Indicador del modo historia
+     */
+    public static boolean modoHistoria = false;
+    /**
+     * Indicador de si el combate ha sido ganado
+     */
+    private boolean combateGanado = false; 
+    /**
+     * Indicador del modo enfrentamiento
+     */
+    private boolean modoEnfrentamiento = false;
+    /**
+     * Indicador de si se vuelve desde el inicio
+     */
+    private boolean volverDesdeInicio = true; 
+    /**
+     * Indicador de si se ha seleccionado un jugador
+     */
+    private boolean jugadorSeleccionado = false; 
+    private boolean computadoraSeleccionada = false; // Indicador de si se ha seleccionado una computadora
+    private boolean escuchadoresPanelSeleccionPersonaje = false; // Indicador de si se están escuchando eventos del panel de selección de personajes
+    private Combate combate; // Instancia del objeto Combate para controlar el combate
+    private Vista vista; // Instancia de la vista del juego
+    private Musica musica, sonido; // Objetos para controlar la reproducción de música y sonidos
+    private Luchador jugador, computadora; // Instancias de los luchadores (jugador y computadora)
+    private ArrayList<Luchador> jugadores, computadoras; // Listas de luchadores (jugadores y computadoras)
+    private DefaultComboBoxModel<String> jComboLuchadores; // Modelo predeterminado para una lista desplegable de nombres de luchadores
+    private ArrayList<Integer> personajesEliminadosPosicion; // Lista de posiciones de personajes eliminados
+
+    /**
+     * implementa un objeto de la clase
+     * @param vista recibe la vista que controlará
+     */
 	public Controlador(Vista vista) {
 
+		//implementación de atributos de clase
 		this.vista = vista;
 		this.personajesEliminadosPosicion = new ArrayList<Integer>();
 		jComboLuchadores = new DefaultComboBoxModel<String>();
 		this.sonido = null;
 		this.musica = new Musica("src/musica/musica_inicio.wav");
-		musica.reproducir();
-		iniciarActionListeners();
+		
+		
 		jugadores = new ArrayList<Luchador>();
 		computadoras = new ArrayList<Luchador>();
-		cargarLuchadores(jugadores);
-		cargarLuchadores(computadoras);
-
+		
 		// declaración de componentes apuntando a la los componentes de la vista
 		lblAvisosHistoria = vista.getLblAvisosHistoria();
 		lblNombreHIstoria = vista.getLblNombreHIstoria();
 		textAreaDescripcionHistoria = vista.getTextAreaDescripcionHistoria();
+		
+		//panel historia
 		lblPesoHistoria = vista.getLblPesoHistoria();
 		lblEdadHIstoria = vista.getLblEdadHIstoria();
 		lblImagen = vista.getLblPersonajeHistoriaImagen();
@@ -81,7 +122,21 @@ public class Controlador implements ActionListener, MouseListener {
 		lblPotencia = vista.getLblPotencia();
 		lblVelocidad = vista.getLblVelocidad();
 		lblEstatura = vista.getLblEstatura();
+		
+		//BOTONES COMBATE
+		btnAtacar = vista.getBtnAtacar();
+		btnDefender = vista.getBtnDefender();
+		btnDescansar = vista.getBtnDescansar();
+		
+		
+		
+		//carga de luchadores, escuchadores y multimedia inicial
+		cargarLuchadores(jugadores);
+		cargarLuchadores(computadoras);
+		iniciarActionListeners();
+		musica.reproducir();
 
+		
 		// en el panelHistori muestra la inforación del personaje seleccionado en el
 		luchadoresLista = vista.getComboBoxNombresLuchadores();
 		luchadoresLista.addActionListener(new ActionListener() {
@@ -274,7 +329,14 @@ public class Controlador implements ActionListener, MouseListener {
 		limpiarLabelsDeBorde(false);
 
 	}
-
+	/**
+	 * Reinicia el modo historia del juego, limpiando todas las variables y componentes relacionados.
+	 * Establece el estado del combate como interrumpido, elimina las referencias a los jugadores y al combate,
+	 * y restablece las variables relacionadas con la selección de jugadores y el progreso en el modo historia.
+	 * Limpia los textos y las etiquetas de selección de jugador, reinicia la vista de los jugadores y elimina los bordes de selección.
+	 * 
+	 * @param finalizado Indica si el modo historia ha sido finalizado.
+	 */
 	public void reiniciarModoHistoria(boolean finalizado) {
 
 		combate.setCombateInterrumpido(true);
@@ -292,7 +354,15 @@ public class Controlador implements ActionListener, MouseListener {
 			irAlSiguientePanel(vista.getPanelJuego(), vista.getPanelSeleccionPersonajes(), 1);
 
 	}
-
+	/**
+	 * Selecciona al jugador para el modo de enfrentamiento. Si se ha seleccionado un personaje válido,
+	 * asigna al jugador el personaje correspondiente y muestra su imagen y título seleccionados.
+	 * Desactiva el botón de selección de jugador y establece la variable de jugador seleccionado como verdadera.
+	 * Carga los escuchadores necesarios para el modo de enfrentamiento y, si también se ha seleccionado la computadora,
+	 * prepara el botón de jugar y muestra un mensaje de exclamación.
+	 * 
+	 * Si no se ha seleccionado ningún personaje, muestra un aviso indicando que se debe seleccionar un personaje para el jugador.
+	 */
 	public void seleccionarJugadorModoEnfrentamiento() {
 
 		if (posicionSeleccionPersonaje >= 0 && posicionSeleccionPersonaje <= 14) {
@@ -312,6 +382,11 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	/**
+	 * Selecciona al personaje de la computadora para el modo de enfrentamiento.
+	 * Reproduce un sonido de selección y muestra la imagen y el título del jugador seleccionado.
+	 * Si el jugador ya está seleccionado, prepara el botón de jugar y muestra exclamaciones.
+	 */
 	public void seleccionarComputadoraModoEnfrentamiento() {
 
 		iniciarSonido(sonido, "seleccion");
@@ -332,11 +407,21 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * selecciona el nombre de una imagen aleatoriamente que después será mostrada
+	 * @param imagenes nombres de imagenes
+	 * @return imagen seleccionada
+	 */
 	private String imagenAleatoria(String[] imagenes) {
 		return imagenes[(int) (0 + Math.random() * imagenes.length)];
 
 	}
 
+	/**
+	 * Desactiva visualmente al personaje eliminado en la interfaz gráfica.
+	 * Desactiva el JLabel correspondiente al personaje en la lista de la computadora,
+	 * establece su borde como nulo y muestra una imagen de eliminación sobre él.
+	 */
 	private void tacharPersonajeElimiando() {
 
 		ArrayList<JLabel> labelsDesactivar = vista.getSeleccionComputadora();
@@ -351,6 +436,12 @@ public class Controlador implements ActionListener, MouseListener {
 		labels.get(posicionSeleccionPersonaje).revalidate();
 	}
 
+	/**
+	 * Actualiza el estado de los botones de selección en la vista.
+	 * Habilita el botón de selección de computadora y deshabilita el botón de jugar.
+	 * Establece el fondo del botón de jugar como gris y del botón de selección de computadora como amarillo.
+	 * Cambia el texto del botón de volver a "Volver".
+	 */
 	public void refrescarBotonesSeleccionar() {
 
 		vista.getBtnSeleccionarComputadora().setEnabled(true);
@@ -360,7 +451,14 @@ public class Controlador implements ActionListener, MouseListener {
 		vista.getBtnVolverDesdeJugar().setText("Volver");
 
 	}
-
+	
+	/**
+	 * Prepara el juego en modo historia.
+	 * Detiene la música actual, inicia el sonido de selección, establece el modo historia como verdadero,
+	 * reinicia las variables relacionadas con la historia del combate, y carga el panel de selección de personajes.
+	 * También inicializa la selección de jugadores y carga los escuchadores de eventos del panel de selección de personajes
+	 * si aún no se han cargado.
+	 */
 	private void modoHistoria() {
 
 		detenerMuscia();
@@ -379,7 +477,12 @@ public class Controlador implements ActionListener, MouseListener {
 			escuchadoresPanelSeleccionPersonaje = true;
 		}
 	}
-
+	
+	/**
+	 * Configura los controles para jugar una partida.
+	 * Si el combate ha sido ganado y el juego está en modo historia, desactiva el botón de selección de jugador,
+	 * activa el botón de selección de computadora y desactiva el botón de jugar.
+	 */
 	private void configuracionParaJugarPartida() {
 
 		if (combateGanado && modoHistoria) {
@@ -450,6 +553,10 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	/**
+	 * pone los valores del luchador al valor por defecto
+	 * @param luchador será el luchador al que se le resetearan los valores
+	 */
 	private void resetearVidaLuchador(Luchador luchador) {
 		luchador.setCansancio(100);
 		luchador.setVida(100);
@@ -483,7 +590,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 			JLabel label = (JLabel) e.getSource();
 
-			if (posicionSeleccionPersonaje == -1)
+			
 				posicionSeleccionPersonaje = Integer.parseInt(label.getName());
 
 			if (!jugadorSeleccionado) {
@@ -519,7 +626,11 @@ public class Controlador implements ActionListener, MouseListener {
 		// TODO Auto-generated method stub
 
 	}
-
+	/**
+	 * Elimina el borde de los JLabels asociados a los personajes (ya sea jugador o computadora).
+	 *
+	 * @param jugador True si se están limpiando los JLabels de los personajes del jugador, False si son los de la computadora.
+	 */
 	public void limpiarLabelsDeBorde(boolean jugador) {// o computadora
 
 		ArrayList<JLabel> labels = null;
@@ -537,31 +648,36 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Establece un borde resaltado alrededor del JLabel que representa al personaje seleccionado.
+	 *
+	 * @param posicionPersonaje La posición del personaje seleccionado.
+	 * @param jugador Indica si el personaje pertenece al jugador (true) o a la computadora (false).
+	 */
+	
 	private void ponerBordeSeleccionPersonaje(int posicionPersonaje, boolean jugador) {
-
+	    
 		Border borde = null;
+	    ArrayList<JLabel> labels = jugador ? vista.getSeleccionPersonajes() : vista.getSeleccionComputadora();
 
-		ArrayList<JLabel> labels = null;
-
-		if (jugador)
-			labels = vista.getSeleccionPersonajes();
-		else
-			labels = vista.getSeleccionComputadora();
-
-		for (JLabel jLabel : labels) {
-			if (jLabel.getName().equals(posicionPersonaje + "")) {
-				if (posicionPersonaje != 0)
-					iniciarSonido(sonido, "cambio_personaje_seleccion");
-
-				borde = new LineBorder(Color.yellow, 5);
-				jLabel.setBorder(borde);
-			} else {
-				jLabel.setBorder(null);
-			}
-		}
-
+	    for (JLabel jLabel : labels) {
+	        if (Integer.parseInt(jLabel.getName()) == posicionPersonaje) {
+	            if (posicionPersonaje >= 0) {
+	                iniciarSonido(sonido, "cambio_personaje_seleccion");
+	            }
+	            borde = new LineBorder(Color.YELLOW, 5);
+	        } else {
+	            borde = null;
+	        }
+	        jLabel.setBorder(borde);
+	    }
 	}
 
+	/**
+	 * Recoge la posición del personaje seleccionado y muestra sus datos en los JLabels correspondientes.
+	 *
+	 * @param label El JLabel del personaje seleccionado.
+	 */
 	private void recogerPosicionYMostrarDatosPersonaje(JLabel label) {
 
 		if (posicionSeleccionPersonaje == -1) {
@@ -572,35 +688,55 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Realiza la acción de descansar para el jugador durante el combate.
+	 * Desactiva los botones de combate, actualiza la vista del combate y pasa el turno a la computadora.
+	 */
 	private void descansar() {
 
 		jugador.getCombate().descansar(jugador);
 		jugador.getCombate().setTurnoComputadora(true);
-		desactivarAcciones();
+		desactivarBotonesCombate();
 		actualizarVistaCombate();
 
 	}
-
+	
+	/**
+	 * Realiza la acción de defenderse durante el combate.
+	 * Establece que el jugador está defendiéndose, pasa el turno a la computadora,
+	 * desactiva los botones de combate y actualiza la vista del combate.
+	 */
 	private void defender() {
 
 		jugador.setDefendiendo(true);
 		jugador.getCombate().setTurnoComputadora(true);
-		desactivarAcciones();
+		desactivarBotonesCombate();
 		actualizarVistaCombate();
 
 	}
 
+	/**
+	 * Realiza la acción de atacar durante el combate.
+	 * Ejecuta el ataque del jugador sobre la computadora en el combate actual,
+	 * reproduce el sonido correspondiente al ataque del jugador, pasa el turno a la computadora,
+	 * cambia la imagen al atacar, desactiva los botones de combate y actualiza la vista del combate.
+	 */
 	private void atacar() {
 
 		jugador.getCombate().atacar(jugador, computadora);
 		iniciarSonido(sonido, procesarSonidosJugador(jugador.getVocesPersonaje()));
 		combate.setTurnoComputadora(true);
 		cambiarImagenAlAtacar(true, jugador.getImgPelea());
-		desactivarAcciones();
+		desactivarBotonesCombate();
 		actualizarVistaCombate();
 
 	}
 
+	/**
+	 * Muestra la información del personaje seleccionado en el combobox de nombres de luchadores.
+	 * Obtiene la posición del personaje seleccionado en el combobox, 
+	 * y luego muestra la información correspondiente a ese personaje en la vista de la historia.
+	 */
 	private void mostrarInformacionPersonaje() {
 
 		int posicionPersonaje = vista.getComboBoxNombresLuchadores().getSelectedIndex();
@@ -608,7 +744,11 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-	// booleano en true cambia la imagen del jugador y en false la del computer
+	/**
+	 * método que en cada ataque de luchador cambia la imagen haciendo más diámico el juego
+	 * @param jugador será a quien se le cambie la imagen
+	 * @param imagenes será las imagenes para seleccionar una de forma aleatoria con el método de la vista
+	 */
 	public void cambiarImagenAlAtacar(boolean jugador, String[] imagenes) {
 		if (jugador)
 			vista.ponerImagenAJlabel(vista.getLblImagenJ1Juego(), cambiarImagenFondoAlAtacar(imagenes), false);
@@ -616,6 +756,12 @@ public class Controlador implements ActionListener, MouseListener {
 			vista.ponerImagenAJlabel(vista.getLblImagenJ2Juego(), cambiarImagenFondoAlAtacar(imagenes), false);
 	}
 
+	
+	/**
+	 * Prepara el juego para el modo enfrentamiento.
+	 * Detiene la reproducción de la música, inicia el sonido de selección y configura el modo de enfrentamiento.
+	 * Además, inicia la selección de jugadores y carga los escuchadores necesarios para este modo.
+	 */
 	private void modoEnfrentamiento() {
 
 		detenerMuscia();
@@ -628,9 +774,17 @@ public class Controlador implements ActionListener, MouseListener {
 			listenerPanelSeleccionerPersonajes();
 			escuchadoresPanelSeleccionPersonaje = true;
 		}
-
 	}
-
+	
+	/**
+	 * Determina el resultado del combate y realiza las acciones correspondientes, como reproducir sonidos, detener el juego, 
+	 * eliminar al jugador perdedor y actualizar el estado del combate.
+	 * Si el jugador gana el combate, se reproducirá el sonido de victoria y se detendrá el juego. Luego se eliminará al 
+	 * oponente de la vista y se activará el botón para continuar.
+	 * Si el jugador pierde el combate, se reproducirá el sonido de derrota y se detendrá el juego. Luego se eliminará al 
+	 * jugador de la vista y se reiniciarán los contadores de combates ganados en la historia. Además, se resaltará la 
+	 * selección del personaje en la vista.
+	 */
 	public void terminarCombateTacharPerdedor() {
 
 		if (jugador.compareTo(computadora) == 1) {
@@ -651,29 +805,54 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
-	private void desactivarAcciones() {
+	/**
+	 * Desactiva los botones de acciones de combate (atacar, defender, descansar).
+	 */
+	private void desactivarBotonesCombate() {
 
-		vista.getBtnAtacar().setEnabled(false);
-		vista.getBtnDefender().setEnabled(false);
-		vista.getBtnDescansar().setEnabled(false);
+		//BOTONES COMBATE
+		btnAtacar.setEnabled(false);
+		btnDefender.setEnabled(false);
+		btnDescansar.setEnabled(false);
 
 	}
-
+	/**
+	 * Cambia aleatoriamente la imagen de fondo al atacar.
+	 *
+	 * @param imagenes El array de nombres de imágenes disponibles.
+	 * @return El nombre de la imagen seleccionada aleatoriamente.
+	 */
 	public static String cambiarImagenFondoAlAtacar(String[] imagenes) {
 		return imagenes[1 + (int) (Math.random() * (imagenes.length - 1))];
 
 	}
 
+	/**
+	 * Obtiene aleatoriamente la voz de "lose" de un personaje.
+	 *
+	 * @param voces El array de voces disponibles.
+	 * @return La voz de "lose" seleccionada aleatoriamente.
+	 */
 	public String vozLosePersonaje(String[] voces) {
 		return voces[0];
 	}
 
+	/**
+	 * Procesa aleatoriamente los sonidos del jugador.
+	 *
+	 * @param sonidos El array de sonidos disponibles.
+	 * @return El sonido seleccionado aleatoriamente.
+	 */
 	public static String procesarSonidosJugador(String[] sonidos) {
 		return sonidos[(int) (1 + Math.random() * (sonidos.length - 1))];
 	}
+	
+	/**
+	 * Refresca la vista con la información de mensaje de la acción, la vida y vitalidad actual de los jugadores.
+	 */
+	public void refrescarMarcadores() {
 
-	public void actualizarVista() {
-
+		//actualiza
 		vista.getLblVidaPj1().setText(jugador.getVida() + "");
 		vista.getLblVidaPj2().setText(computadora.getVida() + "");
 
@@ -686,24 +865,35 @@ public class Controlador implements ActionListener, MouseListener {
 		vista.getProgressBarVitalidadPj1().setValue(jugador.getCansancio());
 		vista.getProgressBarVitalidadPj2().setValue(computadora.getCansancio());
 
+		//mensaje informativo del últiimo movimiento hecho por los jugadores
 		vista.getLblMensajePj1().setText(jugador.getMensajePelea());
 		vista.getLblMensajePj2().setText(computadora.getMensajePelea());
 
 	}
+	
+	/**
+	 * Muestra la información del jugador seleccionado, incluyendo su imagen, título y voz.
+	 *
+	 * @param posicion La posición del jugador seleccionado en la lista de jugadores.
+	 * @param lblImagen El JLabel donde se mostrará la imagen del jugador.
+	 * @param lblNombre El JLabel donde se mostrará el nombre del jugador.
+	 */
 
-	private void mostrarJugadorSonidoVozSeleccionado(int posicion, JLabel lblImagen, JLabel lblTitulo) {
+	private void mostrarJugadorSonidoVozSeleccionado(int posicion, JLabel lblImagen, JLabel lblNombre) {
 
-		if (posicion > 15)
+		if (posicion > 15)// Ajustar la posición si es mayor que 15 (asumiendo que hay 15 jugadores)
 			posicion -= 15;
 
 		Luchador personajeSeleccionado = jugadores.get(posicion);
-		String nombreImagenes[] = personajeSeleccionado.getImgPelea();
 		vozPersonajeSeleccionado(personajeSeleccionado.getVocesPersonaje());
-		lblTitulo.setText(personajeSeleccionado.getNombre());
-		vista.ponerImagenAJlabel(lblImagen, nombreImagenes[0], false);
+		lblNombre.setText(personajeSeleccionado.getNombre());
+		vista.ponerImagenAJlabel(lblImagen, personajeSeleccionado.getImgPelea()[0], false);
 
 	}
 
+	/**
+	 * Prepara el botón de jugar y desactiva los botones de selección de jugador y computadora.
+	 */
 	private void prepararBotonJugar() {
 
 		vista.getBtnJugar().setEnabled(true);
@@ -715,7 +905,10 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
-	
+	/**
+	 * Método para ir a la pantalla de la leyenda.
+	 * Configura los paneles y los luchadores para la pantalla de la historia de los personajes.
+	 */
 	private void irALaPantallaLeyenda() {
 
 		// CONFIGURACIONES DE PANEL
@@ -729,6 +922,11 @@ public class Controlador implements ActionListener, MouseListener {
 		vista.getComboBoxNombresLuchadores().setModel(jComboLuchadores);
 
 	}
+	
+	/**
+	 * Método para volver al inicio desde la pantalla de selección de personajes.
+	 * Restablece algunas variables y activa la música de inicio.
+	 */
 
 	private void volverAIncioDesdeSeleccionPersonaje() {
 
@@ -799,13 +997,10 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que se encargará de recrear los sonidos correspondientes a un momento
-	 * breve de tiempo en la aplicación
-	 * 
-	 * @param sonido Objeto de la clase Música que recibre para iniciar o
-	 *               reiniciarlo
-	 * @nombre String que se refiere al titulo del sonido
-	 * 
+	 * Inicia la reproducción de un archivo de sonido dado el nombre y detiene la reproducción del sonido actual si lo hay.
+	 *
+	 * @param sonido El objeto Musica utilizado para reproducir el sonido.
+	 * @param nombre El nombre del archivo de sonido a reproducir .
 	 */
 	public static void iniciarSonido(Musica sonido, String nombre) {
 		
@@ -909,14 +1104,15 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
-	/*
+	 /**
 	 * Método que activa los botones del panelCombate (no se puede iniciar con los
 	 * demás porque el JPanel es creado después)
 	 */
 	public void activarBotonesPelea() {
-		vista.getBtnAtacar().setEnabled(true);
-		vista.getBtnDefender().setEnabled(true);
-		vista.getBtnDescansar().setEnabled(true);
+		//BOTONES COMBATE
+		btnAtacar.setEnabled(true);
+		btnDefender.setEnabled(true);
+		btnDescansar.setEnabled(true);
 
 	}
 
@@ -1034,26 +1230,33 @@ public class Controlador implements ActionListener, MouseListener {
 
 		vista.getLblMensajePj2().setOpaque(false);
 
-		vista.getBtnAtacar().setEnabled(true);
-		vista.getBtnDefender().setEnabled(true);
-		vista.getBtnDescansar().setEnabled(true);
+		//BOTONES COMBATE
+		btnAtacar.setEnabled(true);
+		btnDefender.setEnabled(true);
+		btnDescansar.setEnabled(true);
 
 	}
 
 	/**
-	 * 
-	 * @param jugadorImg
-	 * @param labelTachado
-	 * @param mensajeLucha
-	 * @param pj
+	 * Desactiva la imagen del jugador, muestra una imagen de eliminado, desactiva los botones de combate,
+	 * configura el botón de volver y muestra un mensaje indicando que el jugador ha perdido el combate.
+	 *
+	 * @param jugadorImg La etiqueta que muestra la imagen del jugador.
+	 * @param labelTachado La etiqueta que muestra la imagen de eliminado.
+	 * @param mensajeLucha La etiqueta que muestra el mensaje de combate.
+	 * @param pj El luchador que pierde el combate.
 	 */
 	public void eliminarJugadorAnularBontonesActivarContinuar(JLabel jugadorImg, JLabel labelTachado,
 			JLabel mensajeLucha, Luchador pj) {
 		jugadorImg.setEnabled(false);
 		vista.ponerImagenAJlabel(labelTachado, "eliminado.png", false);
-		vista.getBtnAtacar().setEnabled(false);
-		vista.getBtnDefender().setEnabled(false);
-		vista.getBtnDescansar().setEnabled(false);
+		
+		//BOTONES COMBATE
+		btnAtacar.setEnabled(false);
+		btnDefender.setEnabled(false);
+		btnDescansar.setEnabled(false);
+		
+		
 		vista.getBtnVolverDesdeJugar().setBackground(Color.yellow);
 		vista.getBtnVolverDesdeJugar().setText("CONTINUAR");
 		mensajeLucha.setOpaque(true);
@@ -1063,6 +1266,11 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Reinicia la vista de los jugadores después de un combate, restaurando las configuraciones predeterminadas.
+	 * Si el combate no ha sido ganado, elimina la imagen del jugador seleccionado, deshabilita el botón "Jugar" y 
+	 * restaura el color y estado de los botones "Seleccionar Jugador".
+	 */
 	private void reiniciarVistaJugadores() {
 
 		if (!combateGanado) {
@@ -1084,6 +1292,11 @@ public class Controlador implements ActionListener, MouseListener {
 
 	}
 
+	/**
+	 * Coloca los datos del jugador seleccionado en los JLabels correspondientes en la vista.
+	 *
+	 * @param posicion La posición del jugador en la lista de jugadores.
+	 */
 	private void ponerDatosJugadorSeleccionadoEnJLabels(int posicion) {
 
 		vista.getLblNombreSeleccionPersonaje().setText(jugadores.get(posicion).getNombre());
@@ -1092,7 +1305,11 @@ public class Controlador implements ActionListener, MouseListener {
 		vista.getLblVelocidadSeleccionarPersonaje().setText(jugadores.get(posicion).getVelocidad() + "");
 
 	}
-
+	
+	/**
+	 * Prepara la pantalla para el juego, mostrando los datos y las imágenes de los jugadores.
+	 * Genera números aleatorios para seleccionar imágenes de los jugadores y actualiza las etiquetas correspondientes en la vista.
+	 */
 	private void pantallaJugar() {
 
 		int aleatorioPj1 = (int) (1 + Math.random() * 3);
@@ -1175,29 +1392,37 @@ public class Controlador implements ActionListener, MouseListener {
 	 * del jugador correspondiente. Si la posición es inválida, se muestra un
 	 * mensaje de advertencia en la interfaz de usuario.
 	 *
-	 * @param posicion La posición del jugador en la lista de jugadores.
+	 * @param posicion La posición del jugador en la lista de jugadores que fue recogida anteriormente en el JComboBox.
 	 */
 	public void mostrarJugadorHistoria(int posicion) {
 
 		if (posicion > -1) {
+			
+			//recoje el jugador seleccionado en el JComboBox
 			jugador = jugadores.get(posicion);
+			
+			//muestra los datos técnicos del jugador en los componentes de la vista
 			lblAvisosHistoria.setText("");
 			lblEstatura.setText(String.valueOf(jugador.getEstatura()));
 			lblNombreHIstoria.setText(jugador.getNombre());
 			textAreaDescripcionHistoria.setText(jugador.getDescripcion());
 			lblPesoHistoria.setText(jugador.getPeso() + " kg");
 			lblEdadHIstoria.setText(String.valueOf(jugador.getEdad()));
-			vista.ponerImagenAJlabel(lblImagen, jugador.getImgPelea()[0], false);
 			lblFisico.setText(String.valueOf(jugador.getFisico()));
 			lblPotencia.setText(String.valueOf(jugador.getPotencia()));
 			lblVelocidad.setText(String.valueOf(jugador.getVelocidad()));
+		
+			vista.ponerImagenAJlabel(lblImagen, jugador.getImgPelea()[0], false);//muestra la imagen del lucahdor
+			
 		} else {
 			limparCamposHistoria();
 			lblAvisosHistoria.setText("DEBE SELECCIONAR UN PERSONAJE");
 		}
-
 	}
 
+	/**
+	 * inicia los escuchadores posibles al iniciar el programa
+	 */
 	public void iniciarActionListeners() {
 
 		vista.getBtnEnfrentamiento().addActionListener(this);
@@ -1205,9 +1430,13 @@ public class Controlador implements ActionListener, MouseListener {
 		vista.getBtnInfomracion().addActionListener(this);
 		vista.getBtnLeyendaPersonajes().addActionListener(this);
 		vista.getBtnVolverAtrasDesdeLeyendas().addActionListener(this);
-		vista.getBtnAtacar().addActionListener(this);
-		vista.getBtnDefender().addActionListener(this);
-		vista.getBtnDescansar().addActionListener(this);
+		
+		//CONTROLES COMBATE
+		btnAtacar.addActionListener(this);
+		btnDefender.addActionListener(this);
+		btnDescansar.addActionListener(this);
+		
+		
 		vista.getBtnVolverDesdeJugar().addActionListener(this);
 		vista.getBtnContinuarDesbloquePersonaje().addActionListener(this);
 		vista.getBtnVolverDeInfo().addActionListener(this);
@@ -1216,7 +1445,7 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	/**
-	 * Método que
+	 * inicia los escuchadores del panel selección de personajes puesto que es dinámico y se crea cada vez
 	 */
 	private void listenerPanelSeleccionerPersonajes() {
 		vista.getBtnJugar().addActionListener(this);
@@ -1266,7 +1495,7 @@ public class Controlador implements ActionListener, MouseListener {
 				{ "Blanka", "Brasil", "22", "1.85", "98", "22", "36", "32",
 						"Hombre brasileño cuyo cuerpo ha sido infectado con demasiada clorofila proveniente de las selvas\r\ndonde vive. Es famoso por su movimiento especial eléctrico y sus movimientos rodantes.",
 						"blanka_historia.png", "blanka_ataque1.png", "blanka_ataque2.png", "blanka_ataque3.png",
-						"blanka_dead", "blanka_ataque1", "blanka_ataque2", "blanka_ataque3" },
+						"blanka_dead", "blanka_ataque1", "blanka_ataque2", "blanka_ataque3" },		
 				{ "Zangief", "Rusia", "44", "2.13", "160", "39", "36", "15",
 						"Luchador ruso acostumbrado a entrenar con grandes osos. Es un luchador lento, pero si\r\nlogra agarrarte, estás acabado. Ingresa al evento por motivos económicos.",
 						"zangief_historia.png", "zangief_ataque1.png", "zangief_ataque2.png", "zangief_ataque3.png",
@@ -1287,6 +1516,10 @@ public class Controlador implements ActionListener, MouseListener {
 						"Ex boxeador profesional que trabaja bajo las órdenes de M.Bison en la organización criminal de\r\nShadaloo. Lucha pura y exclusivamente con los puños.",
 						"balrog_historia.png", "balrog_ataque1.png", "balrog_ataque2.png", "balrog_ataque3.png",
 						"balrog_dead", "balrog_ataque1", "balrog_ataque2", "balrog_ataque3" },
+				{ "Vega", "España", "24", "1.86", "80", "28", "34", "28",
+							"Luchador español contratado por Shadoloo que utiliza un estilo de lucha muy particular en el que\r\nmezcla una rápida habilidad de esquiva parecida a la esgrima con una potente garra",
+							"vega_historia.png", "vega_ataque1.png", "vega_ataque2.png", "vega_ataque3.png",
+							"vega_dead", "vega_ataque1", "vega_ataque2", "vega_ataque3" },
 				{ "Sagat", "Tailandia", "49", "2.25", "150", "35", "35", "20",
 						"Integrante de Shadaloo, ingresa al torneo por venganza contra Ryu que años antes en una pelea le\r\nncausó la cicatriz que tiene en el pecho.",
 						"sagat_historia.png", "sagat_ataque1.png", "sagat_ataque2.png", "sagat_ataque3.png",
@@ -1294,7 +1527,7 @@ public class Controlador implements ActionListener, MouseListener {
 				{ "M.Bison", "Desconocida", "51", "2.10", "115", "37", "38", "25",
 						"Líder de la organización criminal de Shadaloo. Es el organizador principal del torneo, aunque\r\n realmente es una tapadera, es un contrabandista de armas y drogas cegado por el poder.",
 						"mbison_historia.png", "mbison_ataque1.png", "mbison_ataque2.png", "mbison_ataque3.png",
-						"m_bison_dead", "m_bison_ataque1", "m_bison_ataque2", "m_bison_ataque3" } };
+						"m_bison_dead", "m_bison_ataque1", "m_bison_ataque2", "m_bison_ataque3" }};
 
 		//bucle que introduce la información en los objetos luchador
 		for (String[] info : infoLuchadores) {
